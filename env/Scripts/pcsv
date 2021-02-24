@@ -1,7 +1,0 @@
-#!C:\Users\Kyle\OneDrive - UW\Documents\Research\Code\HEBIArm\PythonApplication1\env\Scripts\python.exe
-import pcsv
-from jtutils import fix_broken_pipe
-
-if __name__ == "__main__":
-    fix_broken_pipe()
-    pcsv.pcsv()
