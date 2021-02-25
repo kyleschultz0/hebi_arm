@@ -27,27 +27,33 @@ if __name__ == "__main__":
     encoder_process = run_encoder_process()
     group, hebi_feedback, command = initialize_hebi()
     group.feedback_frequency = 50
-    t = time()
-    test_time = time()
+    t0 = time()
     while True:
         h_theta, h_omega, hf_torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)
+        # print('HEBI Omega:', h_omega)
+        # print('HEBI Feedback Torque:', hf_torque)
+        # print('HEBI Command Torque:', hc_torque)
         e_theta = read_encoder()
         print('HEBI angles:', h_theta)
         print('encoder angles:', e_theta)
+        t = time() - t0
 
-        # theta = trajectory(t)
-        # command.position = theta
-        # send_hebi_position_command(group, command)        
+        theta = trajectory(t)
+        command.position = theta
+        send_hebi_position_command(group, command)        
         hc_torque = np.array([0,0]) # no command torque
 
-        # with open('csv/test_data.csv', mode='a') as data_file:
-        #     data_file = csv.writer(data_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        #     data_file.writerow([t, 
-        #                         h_theta[0], h_theta[1], 
-        #                         h_omega[0], h_omega[1], 
-        #                         hf_torque[0], hf_torque[1],
-        #                         hc_torque[0], hc_torque[1],
-        #                         e_theta[0], e_theta[1]])        
+        try:
+            with open('csv/test_data.csv', mode='a') as data_file:
+                 data_file = csv.writer(data_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+                 data_file.writerow([t, 
+                                     h_theta[0], h_theta[1], 
+                                     h_omega[0], h_omega[1], 
+                                     hf_torque[0], hf_torque[1],
+                                     hc_torque[0], hc_torque[1],
+                                     e_theta[0], e_theta[1]])        
+        except:
+            print("Failed to write to testa data CSV")
         
         if hebi_limit_stop_flag: 
             print("Stopping: HEBI joints past limits")
@@ -55,5 +61,5 @@ if __name__ == "__main__":
         if keyboard.is_pressed('q'):
             break
         
-        print('Loop Time:', time()-test_time)
-        test_time=time()
+        # print('Loop Time:', time()-test_time)
+        # test_time=time()

@@ -30,20 +30,22 @@ def decode_readings(readings, num_encoders):
         output[index] = float(string_list[1])*(2*np.pi/4096)
     return output
 
-def get_encoder_feedback(arduino, num_encoders=2, joint_offsets=np.array([3.069, 3.574])):
+def get_encoder_feedback(arduino, num_encoders=2, joint_offsets=np.array([-6.20, -6.70])):
     # joint_offsets - set in radians to change x/y position
     readings = []
     for i in range(num_encoders):
         reading = arduino.readline()
         readings += [reading]
-    theta = decode_readings(readings, num_encoders=num_encoders)
+    theta = -decode_readings(readings, num_encoders=num_encoders)   # negative because opposite direction
     theta -= joint_offsets
     
     try:
         with open('csv/encoder.csv', mode='w') as data_file:
             data_file = csv.writer(data_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             data_file.writerow([theta[0], theta[1]])
+            # print("Theta 1:", theta[0])
     except:
+        print("Failed to open CSV to write")
         pass
     return
 
@@ -55,7 +57,7 @@ def encoder_process():
 
 def run_encoder_process():
     proc = Process(target=encoder_process)
-    proc.start()
+    proc.start() 
     return proc
 
 def read_encoder():
@@ -64,9 +66,10 @@ def read_encoder():
         with open('csv/encoder.csv', mode='r') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')  
             for row in csv_reader:
-                theta = np.array([float(row[0]), float(row[1])])
+                theta = np.array([float(row[1]), float(row[0])])
                 encoder_backup_theta = theta
-                return 
+                # print("Encoder Readings from CSV:", theta)
+                return theta 
                 break
     except:
         print('HY')
