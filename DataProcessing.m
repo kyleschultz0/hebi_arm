@@ -20,7 +20,7 @@ opts.ExtraColumnsRule = "ignore";
 opts.EmptyLineRule = "read";
 
 % Import the data
-testdata1 = readtable("csv/test_data", opts);
+testdata1 = readtable("csv/circle_5_15", opts);
 
 % Clear temporary variables
 clear opts
@@ -33,6 +33,6 @@ clear opts
 figure;
 plot(testdata1.t, testdata1.h_theta1, 'b-', testdata1.t, testdata1.e_theta1, 'b--',...
     testdata1.t, testdata1.h_theta2, 'r-', testdata1.t, testdata1.e_theta2, 'r--');
-ylim([0 3.5]);
+% ylim([0 3.5]);
 legend("HEBI Angle 1", "Encoder Angle 1", "HEBI Angle 2", "Encoder Angle 2");
 

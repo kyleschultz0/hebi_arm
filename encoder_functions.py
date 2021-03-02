@@ -30,13 +30,13 @@ def decode_readings(readings, num_encoders):
         output[index] = float(string_list[1])*(2*np.pi/4096)
     return output
 
-def get_encoder_feedback(arduino, num_encoders=2, joint_offsets=np.array([-6.20, -6.70])):
+def get_encoder_feedback(arduino, num_encoders=2, joint_offsets=np.array([3.82-0.1333, 4.33-1.2832])):
     # joint_offsets - set in radians to change x/y position
     readings = []
     for i in range(num_encoders):
         reading = arduino.readline()
         readings += [reading]
-    theta = -decode_readings(readings, num_encoders=num_encoders)   # negative because opposite direction
+    theta = decode_readings(readings, num_encoders=num_encoders)   # negative because opposite direction
     theta -= joint_offsets
     
     try:

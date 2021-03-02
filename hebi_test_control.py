@@ -11,14 +11,25 @@ from encoder_functions import run_encoder_process, read_encoder
 import csv
 import keyboard
 import numpy as np
+import pandas as pd
 from time import time
 
 
 e_theta = 1
 
 def trajectory(t):
-    theta = np.array([-np.pi/4*np.sin(np.pi/4*t) + np.pi/2, 
-                      np.pi/4*np.sin(np.pi/4*t) + np.pi/2])
+    column_names = ["t", "theta1", "theta2"]
+    df = pd.read_csv("trajectories/ccircle_5_15.csv", names=column_names)
+    tTraj = df.t
+    theta1 = df.theta1
+    theta2 = df.theta2
+    theta1 = np.interp(t, tTraj, theta1)
+    theta2 = np.interp(t, tTraj, theta2)
+    theta = np.array([theta1, theta2])
+    print("Trajectory output:", theta)
+               
+    # theta = np.array([-np.pi/4*np.sin(np.pi/4*t) + np.pi/2, 
+    #                 np.pi/4*np.sin(np.pi/4*t) + np.pi/2])
     # theta = np.array([np.pi/2, 
     #                   np.pi/2])
     return theta
@@ -44,7 +55,7 @@ if __name__ == "__main__":
         hc_torque = np.array([0,0]) # no command torque
 
         try:
-            with open('csv/test_data.csv', mode='a') as data_file:
+            with open('csv/circle_5_15.csv', mode='a') as data_file:
                  data_file = csv.writer(data_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                  data_file.writerow([t, 
                                      h_theta[0], h_theta[1], 
