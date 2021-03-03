@@ -35,9 +35,9 @@ def trajectory(t):
     return theta
 
 if __name__ == "__main__": 
-    encoder_process = run_encoder_process()
     group, hebi_feedback, command = initialize_hebi()
     group.feedback_frequency = 50
+    arduino = initialize_encoders()
     t0 = time()
     while True:
         h_theta, h_omega, hf_torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)

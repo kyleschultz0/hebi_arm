@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Jan 24 23:09:27 2021
-
-@author: wade9
-"""
 import hebi
 import numpy as np
 from time import sleep
@@ -21,7 +15,7 @@ def get_group():
     # Set gains
     gains_command = hebi.GroupCommand(group.size)
     try:
-        gains_command.read_gains("default_gains.xml")
+        gains_command.read_gains("gains/default_gains.xml")
     except:
         print('inititalize_hebi: failed to read gains')
         return None
