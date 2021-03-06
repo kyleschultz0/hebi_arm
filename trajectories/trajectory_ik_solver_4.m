@@ -180,6 +180,9 @@ function solve_ik(points, count, speed, D, T, center, shape, animate, save)
         % Start from prior solution
         qInitial = qSol;
     end
+    
+    header = ["theta1" "theta2"];
+    qs = [header; qs];
 
     if save
         writematrix(qs,save_filename) 
