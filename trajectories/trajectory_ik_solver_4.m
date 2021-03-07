@@ -20,8 +20,8 @@ T = 0.005;
 center = [-0.1 0.2 0];
 
 % D = 0.05:0.05:0.25;
-D = [0.05, 0.10, 0.15, 0.2, 0.25];
-speed = [0.01, 0.05, 0.1, 0.25, 0.5];
+D = [0.10, 0.15, 0.2, 0.25];
+speed = [0.1, 0.25, 0.5];
 
 % circle
 for i = 1:length(D)
@@ -180,6 +180,9 @@ function solve_ik(points, count, speed, D, T, center, shape, animate, save)
         % Start from prior solution
         qInitial = qSol;
     end
+    
+    header = ["theta1" "theta2"];
+    qs = [header; qs];
 
     if save
         writematrix(qs,save_filename) 

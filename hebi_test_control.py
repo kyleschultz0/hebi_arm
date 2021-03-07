@@ -7,6 +7,7 @@ Created on Sun Jan 24 23:35:46 2021
 
 from hebi_functions import initialize_hebi, get_hebi_feedback, send_hebi_position_command
 from encoder_functions import run_encoder_process, read_encoder
+from trajectory_functions import initialize_trajectory, trajectory
 
 import csv
 import keyboard
@@ -17,27 +18,12 @@ from time import time
 
 e_theta = 1
 
-def trajectory(t):
-    column_names = ["t", "theta1", "theta2"]
-    df = pd.read_csv("trajectories/ccircle_5_15.csv", names=column_names)
-    tTraj = df.t
-    theta1 = df.theta1
-    theta2 = df.theta2
-    theta1 = np.interp(t, tTraj, theta1)
-    theta2 = np.interp(t, tTraj, theta2)
-    theta = np.array([theta1, theta2])
-    print("Trajectory output:", theta)
-               
-    # theta = np.array([-np.pi/4*np.sin(np.pi/4*t) + np.pi/2, 
-    #                 np.pi/4*np.sin(np.pi/4*t) + np.pi/2])
-    # theta = np.array([np.pi/2, 
-    #                   np.pi/2])
-    return theta
 
 if __name__ == "__main__": 
-    encoder_process = run_encoder_process()
     group, hebi_feedback, command = initialize_hebi()
     group.feedback_frequency = 50
+    arduino = initialize_encoders()
+    initialize_trajectory(50)
     t0 = time()
     while True:
         h_theta, h_omega, hf_torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)
@@ -49,7 +35,7 @@ if __name__ == "__main__":
         print('encoder angles:', e_theta)
         t = time() - t0
 
-        theta = trajectory(t)
+        theta = trajectory(t, "combined_trajectories.csv")
         command.position = theta
         send_hebi_position_command(group, command)        
         hc_torque = np.array([0,0]) # no command torque
