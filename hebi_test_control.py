@@ -6,7 +6,7 @@ Created on Sun Jan 24 23:35:46 2021
 """
 
 from hebi_functions import initialize_hebi, get_hebi_feedback, send_hebi_position_command
-from encoder_functions import run_encoder_process, read_encoder
+from encoder_functions import initialize_encoders, get_encoder_feedback
 from trajectory_functions import initialize_trajectory, trajectory
 
 import csv
@@ -30,7 +30,7 @@ if __name__ == "__main__":
         # print('HEBI Omega:', h_omega)
         # print('HEBI Feedback Torque:', hf_torque)
         # print('HEBI Command Torque:', hc_torque)
-        e_theta = read_encoder()
+        e_theta = get_encoder_feedback(arduino) 
         print('HEBI angles:', h_theta)
         print('encoder angles:', e_theta)
         t = time() - t0
@@ -39,9 +39,21 @@ if __name__ == "__main__":
         command.position = theta
         send_hebi_position_command(group, command)        
         hc_torque = np.array([0,0]) # no command torque
+        print("t:", t)
+        print("hTheta1:", h_theta[0])
+        print("hTheta2:", h_theta[1])
+        print("hOmega1:", h_omega[0])
+        print("hOmega2:", h_omega[1])
+        print("hfTor1:", hf_torque[0])
+        print("hfTor2:", hf_torque[1])
+        print("hcTor1:", hc_torque[0])
+        print("hcTor2:", hc_torque[1])
+        print("eTheta1:", e_theta[0])
+        print("eTheta2:", e_theta[1])
+
 
         try:
-            with open('csv/circle_5_15.csv', mode='a') as data_file:
+            with open('csv/test_data_full.csv', mode='a') as data_file:
                  data_file = csv.writer(data_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                  data_file.writerow([t, 
                                      h_theta[0], h_theta[1], 
