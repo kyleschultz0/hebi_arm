@@ -16,6 +16,8 @@
 //set the chip select pin for the AMT20
 int SSS[] = {9,10}; // SSS pins in order of encoder connection
 
+int sendByte = -1;
+
 //Arduino uses a setup function for all program initializations
 void setup() 
 {
@@ -86,13 +88,26 @@ void loop()
         
         while(true);
       }
+      //while(sendByte == -1){
+      //  sendByte = Serial.read();
+      //}
+      //sendByte = -1;
+      while(true){
+        if (Serial.available() != 0){
+          break;
+        }
+      }
+
+      while(Serial.available() > 0){
+        Serial.read();
+      }
+      
+      //sendByte = Serial.read();
+//      Serial.print(Serial.available());
       Serial.print(i+1);
-      // Serial.write(",");
-      // Serial.print(millis());
       Serial.write(",");
       Serial.print(currentPosition);
       Serial.write("\n");
-      delay(1);
     }
 }
 
