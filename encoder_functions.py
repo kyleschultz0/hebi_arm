@@ -32,14 +32,14 @@ def get_reading(arduino):
         reading = arduino.readline()
     return reading
 
-def get_encoder_feedback(arduino, num_encoders=2, joint_offsets=np.array([3.519, 3.11])):
+def get_encoder_feedback(arduino, num_encoders=2, joint_offsets=np.array([6.7128, 6.2063])):
     # joint_offsets - set in radians to change x/y position
     readings = []
     for i in range(num_encoders):
         reading = get_reading(arduino)
         readings += [reading]
-    theta = decode_readings(readings, num_encoders=num_encoders)
-    theta -= joint_offsets
+    theta = -decode_readings(readings, num_encoders=num_encoders)
+    theta += joint_offsets
     return theta
     
 # to test functions:

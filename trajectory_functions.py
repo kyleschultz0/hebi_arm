@@ -26,6 +26,7 @@ def initialize_trajectory(frequency):
     print(combined_csv)
     #export to csv
     combined_csv.to_csv( "combined_trajectories.csv", index=False, encoding='utf-8-sig')
+    os.chdir('..')
 
     
 

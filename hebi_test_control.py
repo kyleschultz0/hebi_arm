@@ -14,6 +14,7 @@ import keyboard
 import numpy as np
 import pandas as pd
 from time import time
+import os
 
 
 e_theta = 1
@@ -21,7 +22,7 @@ e_theta = 1
 
 if __name__ == "__main__": 
     group, hebi_feedback, command = initialize_hebi()
-    group.feedback_frequency = 50
+    group.feedback_frequency = 100
     arduino = initialize_encoders()
     initialize_trajectory(50)
     t0 = time()
@@ -35,21 +36,10 @@ if __name__ == "__main__":
         print('encoder angles:', e_theta)
         t = time() - t0
 
-        theta = trajectory(t, "combined_trajectories.csv")
+        theta = trajectory(t, "trajectories/combined_trajectories.csv")
         command.position = theta
         send_hebi_position_command(group, command)        
         hc_torque = np.array([0,0]) # no command torque
-        print("t:", t)
-        print("hTheta1:", h_theta[0])
-        print("hTheta2:", h_theta[1])
-        print("hOmega1:", h_omega[0])
-        print("hOmega2:", h_omega[1])
-        print("hfTor1:", hf_torque[0])
-        print("hfTor2:", hf_torque[1])
-        print("hcTor1:", hc_torque[0])
-        print("hcTor2:", hc_torque[1])
-        print("eTheta1:", e_theta[0])
-        print("eTheta2:", e_theta[1])
 
 
         try:
@@ -62,7 +52,7 @@ if __name__ == "__main__":
                                      hc_torque[0], hc_torque[1],
                                      e_theta[0], e_theta[1]])        
         except:
-            print("Failed to write to testa data CSV")
+            print("Failed to write to testa data CSV in")
         
         if hebi_limit_stop_flag: 
             print("Stopping: HEBI joints past limits")
