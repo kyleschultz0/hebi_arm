@@ -34,8 +34,8 @@ def velocity(theta, T):
     global omega1k_1
     global omega2k_1
     
-    omega1 = (2/T)*(theta[0] - theta1k_1) - omega1k_1
-    omega2 = (2/T)*(theta[1] - theta2k_1) - omega2k_1
+    omega1 = (1/T)*(theta[0] - theta1k_1)
+    omega2 = (1/T)*(theta[1] - theta2k_1)
     theta1k_1 = theta[0]
     theta2k_1 = theta[1]
     # replace lines if acceration() is removed, acceleration updates these:
