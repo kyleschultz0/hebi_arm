@@ -20,8 +20,8 @@ T = 0.005;
 center = [-0.1 0.2 0];
 
 % D = 0.05:0.05:0.25;
-D = [0.10, 0.15, 0.2, 0.25];
-speed = [0.1, 0.25, 0.5];
+D = 0.10;
+speed = 0.10;
 
 % circle
 for i = 1:length(D)
@@ -41,82 +41,82 @@ solve_ik(points, count, speed(j), D(i), T, center, shape, animate, save)
     end
 end
 
-% pentagon
-for i = 1:length(D)
-    for j = 1:length(speed)
-shape = 'cpentagon';
-[points, count] = pentagon(speed(j), D(i), T, center);
-solve_ik(points, count, speed(j), D(i), T, center, shape, animate, save)
-    end
-end
-
-% hexagon
-for i = 1:length(D)
-    for j = 1:length(speed)
-shape = 'chexagon';
-[points, count] = hexagon(speed(j), D(i), T, center);
-solve_ik(points, count, speed(j), D(i), T, center, shape, animate, save)
-    end
-end
-
-% star
-for i = 1:length(D)
-    for j = 1:length(speed)
-shape = 'cstar';
-[points, count] = star(speed(j), D(i), T, center);
-solve_ik(points, count, speed(j), D(i), T, center, shape, animate, save)
-    end
-end
-
-% circle
-for i = 1:length(D)
-    for j = 1:length(speed)
-shape = 'rcircle';
-[points, count] = circle(speed(j), D(i), T, center);
-points = flip(points);
-solve_ik(points, count, speed(j), D(i), T, center, shape, animate, save)
-    end
-end
-
-% square
-for i = 1:length(D)
-    for j = 1:length(speed)
-shape = 'rsquare';
-[points, count] = square(speed(j), D(i), T, center);
-points = flip(points);
-solve_ik(points, count, speed(j), D(i), T, center, shape, animate, save)
-    end
-end
-
-% pentagon
-for i = 1:length(D)
-    for j = 1:length(speed)
-shape = 'rpentagon';
-[points, count] = pentagon(speed(j), D(i), T, center);
-points = flip(points);
-solve_ik(points, count, speed(j), D(i), T, center, shape, animate, save)
-    end
-end
-
-% hexagon
-for i = 1:length(D)
-    for j = 1:length(speed)
-shape = 'rhexagon';
-[points, count] = hexagon(speed(j), D(i), T, center);
-points = flip(points);
-solve_ik(points, count, speed(j), D(i), T, center, shape, animate, save)
-    end
-end
-
-% star
-for i = 1:length(D)
-    for j = 1:length(speed)
-shape = 'rstar';
-[points, count] = star(speed(j), D(i), T, center);
-points = flip(points);
-solve_ik(points, count, speed(j), D(i), T, center, shape, animate, save)
-    end
-end
+% % pentagon
+% for i = 1:length(D)
+%     for j = 1:length(speed)
+% shape = 'cpentagon';
+% [points, count] = pentagon(speed(j), D(i), T, center);
+% solve_ik(points, count, speed(j), D(i), T, center, shape, animate, save)
+%     end
+% end
+% 
+% % hexagon
+% for i = 1:length(D)
+%     for j = 1:length(speed)
+% shape = 'chexagon';
+% [points, count] = hexagon(speed(j), D(i), T, center);
+% solve_ik(points, count, speed(j), D(i), T, center, shape, animate, save)
+%     end
+% end
+% 
+% % star
+% for i = 1:length(D)
+%     for j = 1:length(speed)
+% shape = 'cstar';
+% [points, count] = star(speed(j), D(i), T, center);
+% solve_ik(points, count, speed(j), D(i), T, center, shape, animate, save)
+%     end
+% end
+% 
+% % circle
+% for i = 1:length(D)
+%     for j = 1:length(speed)
+% shape = 'rcircle';
+% [points, count] = circle(speed(j), D(i), T, center);
+% points = flip(points);
+% solve_ik(points, count, speed(j), D(i), T, center, shape, animate, save)
+%     end
+% end
+% 
+% % square
+% for i = 1:length(D)
+%     for j = 1:length(speed)
+% shape = 'rsquare';
+% [points, count] = square(speed(j), D(i), T, center);
+% points = flip(points);
+% solve_ik(points, count, speed(j), D(i), T, center, shape, animate, save)
+%     end
+% end
+% 
+% % pentagon
+% for i = 1:length(D)
+%     for j = 1:length(speed)
+% shape = 'rpentagon';
+% [points, count] = pentagon(speed(j), D(i), T, center);
+% points = flip(points);
+% solve_ik(points, count, speed(j), D(i), T, center, shape, animate, save)
+%     end
+% end
+% 
+% % hexagon
+% for i = 1:length(D)
+%     for j = 1:length(speed)
+% shape = 'rhexagon';
+% [points, count] = hexagon(speed(j), D(i), T, center);
+% points = flip(points);
+% solve_ik(points, count, speed(j), D(i), T, center, shape, animate, save)
+%     end
+% end
+% 
+% % star
+% for i = 1:length(D)
+%     for j = 1:length(speed)
+% shape = 'rstar';
+% [points, count] = star(speed(j), D(i), T, center);
+% points = flip(points);
+% solve_ik(points, count, speed(j), D(i), T, center, shape, animate, save)
+%     end
+% end
 
 
 function solve_ik(points, count, speed, D, T, center, shape, animate, save)
@@ -156,7 +156,7 @@ function solve_ik(points, count, speed, D, T, center, shape, animate, save)
     body.Joint = joint;
     addBody(robot, body, 'link2');
 
-    % showdetails(robot)
+    showdetails(robot)
 
     % for configuration solutions
     q0 = [pi/4, pi/2]';
