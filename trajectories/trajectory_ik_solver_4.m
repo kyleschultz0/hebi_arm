@@ -130,8 +130,8 @@ function solve_ik(points, count, speed, D, T, center, shape, animate, save)
     save_filename = strcat(save_filename, num2str(filename_D));
     save_filename = strcat(save_filename, '.csv');
     
-    L1 = 0.18;
-    L2 = 0.21;
+    L1 = 0.28;
+    L2 = 0.60;
 
     % create rigid body tree
     robot = rigidBodyTree('DataFormat','column','MaxNumBodies',2);
@@ -292,7 +292,7 @@ function [points, count] = pentagon(speed, D, T, center)
     time = side_length/speed;
     side_count = round(time/T);
     
-    % define verticies
+    % define vertices
     v1 = center + [0, D/2, 0];
     v2 = center + [D/2*sind(72), D/2*cosd(72), 0];
     v3 = center + [D/2*sind(144), D/2*cosd(144), 0];
