@@ -124,6 +124,7 @@ if __name__ == "__main__":
     t0 = time()
     t_1 = t0
     sleep(0.001)
+    i = 1;
 
     output = []
     while True:
@@ -139,14 +140,23 @@ if __name__ == "__main__":
         t, theta_d, omega_d = trajectory(t, "trajectories/cstar_10_20.csv")
 
         t_2 = time() - t_1
-        print("Loop time:", t_2)
+        print("Loop time 1:", t_2)
         
         effort = PD_controller(theta,theta_d,omega,omega_d)
+        if i == 1:
+            effort = np.array([0, 0]);
+            print("First if")
         command.effort = effort
         send_hebi_effort_command(group, command)
+
+        t_3 = time() - t_1
+        print("Loop time 2:", t_3)
         
         output += [[t,theta_d[0],theta[0],h_theta[0],omega[0],effort[0],
                       theta_d[1],theta[1],h_theta[1],omega[1],effort[1]]]
+
+        t_4 = time() - t_1
+        print("Loop time 3:", t_4)
         
         if hebi_limit_stop_flag: 
             save_data(output)
@@ -160,3 +170,10 @@ if __name__ == "__main__":
             save_data(output)
             print("Stopping: Time limit reached")
             break
+
+        t_5 = time() - t_1
+        print("Loop time 4:", t_5)
+        if i == 1:
+            t0 = time()
+            i +=1
+            print("Second if")
