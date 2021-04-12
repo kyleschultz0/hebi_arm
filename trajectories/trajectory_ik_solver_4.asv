@@ -284,7 +284,7 @@ function solve_ik(points, count, speed, D, T, center, shape, animate, save)
 
     if save
         t = 0:T:T*(count-1);
-        qs(2:end, 2:3) = diff(qs(:,4:end))./T;
+        qs(2:end, 2:3) = diff(qs(:,4:end))./
         qs(:, 1) = t.';
         writematrix(qs,save_filename)
         

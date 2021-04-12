@@ -30,7 +30,7 @@ def initialize_trajectory(frequency):
 
     
 
-def trajectory(t, filepath):
+def trajectoryold(t, filepath):
     df = pd.read_csv(filepath)
     tTraj = df.t
     theta1 = df.theta1
@@ -41,7 +41,26 @@ def trajectory(t, filepath):
     print("Trajectory output:", theta)
     return theta
 
+def trajectory(t, filepath):
+    df = pd.read_csv(filepath,
+                     names=["t", "omega1", "omega2", "theta1", "theta2"])
+    tTraj = df.t
+    theta1 = df.theta1
+    theta2 = df.theta2
+    theta1 = np.interp(t, tTraj, theta1)
+    theta2 = np.interp(t, tTraj, theta2)
+    theta = np.array([theta1, theta2])
+    omega1 = df.omega1
+    omega2 = df.omega2
+    omega1 = np.interp(t, tTraj, omega1)
+    omega2 = np.interp(t, tTraj, omega2)
+    omega = np.array([omega1, omega2])
+    return t, theta, omega
+
 # to test functions:
 if __name__ == "__main__":
-    initialize_trajectory(50)
-    theta = trajectory(1, "combined_trajectories.csv")
+    t, theta_d, omega_d = trajectory(1, "trajectories/cstar_20_20.csv")
+    print(t)
+    print(theta_d)
+    print(omega_d)
+   
