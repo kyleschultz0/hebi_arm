@@ -16,14 +16,14 @@ save = 1;
 %% define trajectory
 % each timestep will be one control timestep (will take 0.005 sec)
 
-T = 0.005;
-center = [0 0.75 0];
+T = 0.01;
+center = [-0.3 0.65 0];
 
 % D = [0.05, 0.10, 0.15, 0.2, 0.25];
 % speed = [0.07, 0.11, 0.15, 0.19, 0.23];
 
-D = 0.2;
-speed = 0.1;
+D = 0.25;
+speed = 0.05;
 
 for i = 1:length(D)
     for j = 1:length(speed)
