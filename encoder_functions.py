@@ -27,7 +27,7 @@ def get_reading(arduino):
         reading = arduino.readline()
     return reading
 
-def get_encoder_feedback(arduino, num_encoders=2, joint_offsets=np.array([3.795, 1.5])):
+def get_encoder_feedback(arduino, num_encoders=2, joint_offsets=np.array([3.528, 1.5])):
     # joint_offsets - set in radians to change x/y position
     reading = get_reading(arduino)
     theta = decode_reading(reading, num_encoders=num_encoders)
