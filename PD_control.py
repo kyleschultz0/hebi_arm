@@ -136,7 +136,10 @@ if __name__ == "__main__":
         omega = velocity(theta, T)
         omega = velocity_filter(omega, 5, T)
                        
-        t, theta_d, omega_d = trajectory(t, "trajectories/cstar_20_20.csv")
+        t, theta_d, omega_d = trajectory(t, "trajectories/cstar_10_20.csv")
+
+        t_2 = time() - t_1
+        print("Loop time:", t_2)
         
         effort = PD_controller(theta,theta_d,omega,omega_d)
         command.effort = effort

@@ -260,7 +260,7 @@ function solve_ik(points, count, speed, D, T, center, shape, animate, save)
     % showdetails(robot)
 
     % for configuration solutions
-    q0 = [pi/4, pi/2]';
+    q0 = [pi/2, pi/2]';
     ndof = length(q0);
     qs = zeros(count, 2*ndof+1);
 
@@ -284,7 +284,7 @@ function solve_ik(points, count, speed, D, T, center, shape, animate, save)
 
     if save
         t = 0:T:T*(count-1);
-        qs(2:end, 2:3) = diff(qs(:,4:end))./
+        qs(2:end, 2:3) = diff(qs(:,4:end))./T;
         qs(:, 1) = t.';
         writematrix(qs,save_filename)
         

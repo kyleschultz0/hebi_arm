@@ -23,7 +23,7 @@ center = [0 0.75 0];
 % speed = [0.07, 0.11, 0.15, 0.19, 0.23];
 
 D = 0.2;
-speed = 0.2;
+speed = 0.1;
 
 for i = 1:length(D)
     for j = 1:length(speed)
@@ -260,7 +260,7 @@ function solve_ik(points, count, speed, D, T, center, shape, animate, save)
     % showdetails(robot)
 
     % for configuration solutions
-    q0 = [pi/4, pi/2]';
+    q0 = [pi/2, 0]';
     ndof = length(q0);
     qs = zeros(count, 2*ndof+1);
 
