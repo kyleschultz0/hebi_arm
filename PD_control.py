@@ -89,6 +89,8 @@ def PD_controller(theta,theta_d,omega,omega_d):
                           kp2*(theta_d[1]-theta[1]) + kd2*(omega_d[1]-omega[1])])
     return PD_effort
 
+
+
 #def trajectory(t, freq=pi, mag=pi/4):
 #    # both links sinusoidal:
 #    theta_d = np.array([(mag)*sin(freq*t - pi/2) + pi/2, (mag)*sin(freq*t)])
@@ -137,26 +139,20 @@ if __name__ == "__main__":
         omega = velocity(theta, T)
         omega = velocity_filter(omega, 5, T)
                        
-        t, theta_d, omega_d = trajectory(t, "trajectories/cstar_10_20.csv")
+        t, theta_d, omega_d = trajectory(t, "trajectories/cstar_5_25.csv")
 
-        t_2 = time() - t_1
-        print("Loop time 1:", t_2)
-        
-        effort = PD_controller(theta,theta_d,omega,omega_d)
+        #---------- Output feedback
+        # effort = PD_controller(theta,theta_d,omega,omega_d)
+        effort = PD_controller(h_theta,theta_d,h_omega,omega_d)
+
+
         if i == 1:
             effort = np.array([0, 0]);
             print("First if")
         command.effort = effort
         send_hebi_effort_command(group, command)
-
-        t_3 = time() - t_1
-        print("Loop time 2:", t_3)
-        
         output += [[t,theta_d[0],theta[0],h_theta[0],omega[0],effort[0],
                       theta_d[1],theta[1],h_theta[1],omega[1],effort[1]]]
-
-        t_4 = time() - t_1
-        print("Loop time 3:", t_4)
         
         if hebi_limit_stop_flag: 
             save_data(output)
@@ -171,8 +167,6 @@ if __name__ == "__main__":
             print("Stopping: Time limit reached")
             break
 
-        t_5 = time() - t_1
-        print("Loop time 4:", t_5)
         if i == 1:
             t0 = time()
             i +=1

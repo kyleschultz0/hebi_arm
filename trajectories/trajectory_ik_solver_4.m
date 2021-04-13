@@ -17,7 +17,7 @@ save = 1;
 % each timestep will be one control timestep (will take 0.005 sec)
 
 T = 0.01;
-center = [-0.3 0.65 0];
+center = [0 0.88 0];
 
 % D = [0.05, 0.10, 0.15, 0.2, 0.25];
 % speed = [0.07, 0.11, 0.15, 0.19, 0.23];
@@ -231,8 +231,11 @@ function solve_ik(points, count, speed, D, T, center, shape, animate, save)
     save_filename = strcat(save_filename, num2str(filename_D));
     save_filename = strcat(save_filename, '.csv');
     
-    L1 = 0.28;
-    L2 = 0.6;
+%     L1 = 0.28;
+%     L2 = 0.6;
+    L1 = 0.37;
+    L2 = 0.65;
+
 
     % create rigid body tree
     robot = rigidBodyTree('DataFormat','column','MaxNumBodies',2);
