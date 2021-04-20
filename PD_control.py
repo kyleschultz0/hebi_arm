@@ -139,7 +139,7 @@ if __name__ == "__main__":
         omega = velocity(theta, T)
         omega = velocity_filter(omega, 5, T)
                        
-        t, theta_d, omega_d = trajectory(t, "trajectories/cstar_5_25.csv")
+        t, theta_d, omega_d = trajectory(t, "trajectories/star0")
 
         #---------- Output feedback
         # effort = PD_controller(theta,theta_d,omega,omega_d)
