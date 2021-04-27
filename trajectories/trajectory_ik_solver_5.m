@@ -4,18 +4,18 @@ close all; clear all; clc
 
 %% settings
 
-animate = 0;
+animate = 1;
 save = 1;
 
 %% define trajectory
 % each timestep will be one control timestep (will take 0.02 sec)
 
 T = 0.01;
-center = [0 0.62 0];
+center = [0 0.67 0];
 
-D = 0.20;
+D = 0.12;
 force_endpoint = 1;
-line_time = 4;
+line_time = 3;
 
 save_filename = 'star0.csv';
 [points, count] = star(line_time, D, T, center, force_endpoint);
@@ -23,7 +23,7 @@ solve_ik(points, count, T, animate, save, save_filename);
 
 function solve_ik(points, count, T, animate, save, save_filename)
     L1 = 0.27;
-    L2 = 0.47;
+    L2 = 0.48;
 
     % create rigid body tree
     robot = rigidBodyTree('DataFormat','column','MaxNumBodies',2);
