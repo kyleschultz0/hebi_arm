@@ -106,8 +106,8 @@ if __name__ == "__main__":
     sensor = NetFT.Sensor("192.168.0.11")
     sensor.tare()
 
-    L1 = 0.26
-    L2 = 0.29
+    L1 = 0.29
+    L2 = 0.22
 
     while True:
 
