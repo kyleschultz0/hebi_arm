@@ -96,27 +96,49 @@ def save_data(output):
     print("Data saved")
 
 if __name__ == "__main__":
-    freq = 50 # Hz
+    freq = 100 # Hz
     group, hebi_feedback, command = initialize_hebi()
     group.feedback_frequency = freq
     output = []
     K = np.matrix([[0.1, 0],
                    [0, 0.1]])
 
+    sensor = NetFT.Sensor("192.168.0.11")
+    sensor.tare()
+
+    L1 = 0.26
+    L2 = 0.29
+
     while True:
-       sleep(0.1)
-       f = getForce()
-       print("Force:", f)
+
+       Fraw = sensor.getForce()
+       F = np.array(Fraw[:2])/1000000.0
+       Fraw = sensor.getForce()
+       F = np.array(Fraw[:2])/1000000.0
+       # print("Force:", F)
        theta, omega, torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)  
        theta1 = theta[0]
        theta2 = theta[1]
 
-       Jinv = np.matrix([[-(100*np.sin(theta1 + theta2))/(27*(np.cos(theta1 + theta2)*np.sin(theta1) - np.sin(theta1 + theta2)*np.cos(theta1))), 
-                       -(100*np.cos(theta1 + theta2))/(27*(np.cos(theta1 + theta2)*np.sin(theta1) - np.sin(theta1 + theta2)*cos(theta1)))],
+       Jinv = np.matrix([[-np.sin(theta1 + theta2)/(L1*np.cos(theta1 + theta2)*np.sin(theta1) - L1*np.sin(theta1 + theta2)*np.cos(theta1)),
+                          -np.cos(theta1 + theta2)/(L1*np.cos(theta1 + theta2)*np.sin(theta1) - L1*np.sin(theta1 + theta2)*np.cos(theta1))],
 
-                      [(25*(16*np.sin(theta1 + theta2) + 9*np.sin(theta1)))/(108*(np.cos(theta1 + theta2)*np.sin(theta1) - np.sin(theta1 + theta2)*np.cos(theta1))),
-                       (25*(16*np.cos(theta1 + theta2) + 9*np.cos(theta1)))/(108*(np.cos(theta1 + theta2)*np.sin(theta1) - np.sin(theta1 + theta2)*np.cos(theta1)))]])
-       print("Jinv:", Jinv)
-       # omega_d = invJ @ K @ F
+                         [(L2*np.sin(theta1 + theta2) + L1*np.sin(theta1))/(L1*L2*np.cos(theta1 + theta2)*np.sin(theta1) - L1*L2*np.sin(theta1 + theta2)*np.cos(theta1)),
+                          (L2*np.cos(theta1 + theta2) + L1*np.cos(theta1))/(L1*L2*np.cos(theta1 + theta2)*np.sin(theta1) - L1*L2*np.sin(theta1 + theta2)*np.cos(theta1))]])
+
+       #Jinv = np.matrix([[-(100*np.sin(theta1 + theta2))/(27*(np.cos(theta1 + theta2)*np.sin(theta1) - np.sin(theta1 + theta2)*np.cos(theta1))), 
+       #                -(100*np.cos(theta1 + theta2))/(27*(np.cos(theta1 + theta2)*np.sin(theta1) - np.sin(theta1 + theta2)*cos(theta1)))],
+       #
+       #               [(25*(16*np.sin(theta1 + theta2) + 9*np.sin(theta1)))/(108*(np.cos(theta1 + theta2)*np.sin(theta1) - np.sin(theta1 + theta2)*np.cos(theta1))),
+       #                (25*(16*np.cos(theta1 + theta2) + 9*np.cos(theta1)))/(108*(np.cos(theta1 + theta2)*np.sin(theta1) - np.sin(theta1 + theta2)*np.cos(theta1)))]])
+       # print("Jinv:", Jinv)
+       omega_d = Jinv @ K @ F
+       omega_d = np.squeeze(np.asarray(omega_d))
        # print("Desired velocities:", omega_d)
+
+       command.velocity = omega_d
+       group.send_command(command)
+
+       if keyboard.is_pressed('q'):
+           break
 
