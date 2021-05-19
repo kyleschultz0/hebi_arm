@@ -100,8 +100,8 @@ if __name__ == "__main__":
     group, hebi_feedback, command = initialize_hebi()
     group.feedback_frequency = freq
     output = []
-    K = np.matrix([[0.1, 0],
-                   [0, 0.1]])
+    K = np.matrix([[0.5, 0],
+                   [0, 0.5]])
 
     sensor = NetFT.Sensor("192.168.0.11")
     sensor.tare()
@@ -139,6 +139,6 @@ if __name__ == "__main__":
        command.velocity = omega_d
        group.send_command(command)
 
-       if keyboard.is_pressed('q'):
+       if keyboard.is_pressed('esc'):
            break
 
