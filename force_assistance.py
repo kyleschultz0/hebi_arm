@@ -112,9 +112,7 @@ if __name__ == "__main__":
     while True:
 
        Fraw = sensor.getForce()
-       F = np.array(Fraw[:2])/1000000.0
-       Fraw = sensor.getForce()
-       F = np.array(Fraw[:2])/1000000.0
+       F = np.array([Fraw[1], 0.9*Fraw[2] + 0.42*Fraw[3]])/1000000.0    # Accounting for y force having z and y components in sensor frame
        # print("Force:", F)
        theta, omega, torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)  
        theta1 = theta[0]
