@@ -100,8 +100,8 @@ if __name__ == "__main__":
     group, hebi_feedback, command = initialize_hebi()
     group.feedback_frequency = freq
     output = []
-    K = np.matrix([[0.5, 0],
-                   [0, 0.5]])
+    K = np.matrix([[0.1, 0],
+                   [0, 0.1]])
 
     sensor = NetFT.Sensor("192.168.0.11")
     sensor.tare()
@@ -109,10 +109,12 @@ if __name__ == "__main__":
     L1 = 0.29
     L2 = 0.22
 
+    i = 0
+
     while True:
 
        Fraw = sensor.getForce()
-       F = np.array([Fraw[1], 0.9*Fraw[2] + 0.42*Fraw[3]])/1000000.0    # Accounting for y force having z and y components in sensor frame
+       F = np.array([Fraw[0], 0.9*Fraw[1] + 0.42*Fraw[2]])/1000000.0    # Accounting for y force having z and y components in sensor frame
        # print("Force:", F)
        theta, omega, torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)  
        theta1 = theta[0]
@@ -136,6 +138,11 @@ if __name__ == "__main__":
 
        command.velocity = omega_d
        group.send_command(command)
+
+       if i == 0:
+           print("Ready to operate...")
+           i = 1
+
 
        if keyboard.is_pressed('esc'):
            break
