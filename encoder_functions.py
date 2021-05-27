@@ -36,6 +36,10 @@ def get_encoder_feedback(arduino, num_encoders=2, joint_offsets=np.array([2.01, 
     theta -= np.array([0.33238866, 6.19118518])
     theta *= -1
     return theta
+
+def save_data(output):
+    np.savetxt("csv/EncoderTest1", np.array(output), delimiter=",")
+    print("Data saved")
     
 # to test functions:
 if __name__ == "__main__":
@@ -48,5 +52,12 @@ if __name__ == "__main__":
         t = time()-t0
         output += [[t,theta]]
 
-        if keyboard.is_pressed('q'):
+        if keyboard.is_pressed('esc'):
+            save_data(output)
+            print("Stopping: User input stop command")
+            break
+
+        if t > 20:
+            save_data(output)
+            print("Stopping: Time limit reached")
             break
