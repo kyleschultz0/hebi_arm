@@ -81,10 +81,10 @@ def acceleration_filter(alpha, cutoff_freq, T):
     return np.array([z1,z2])
 
 def PD_controller(theta,theta_d,omega,omega_d):    
-    kp1 = 10.0 # 50hz: 3.0, 200hz: 5.0
-    kd1 = 0.2 # 50hz: 0.5, 200hz: 0.5
-    kp2 = 10.0 # 50hz: 1.0, 200hz: 3.0
-    kd2 = 0.1 # 50hz: 0.05, 200hz: 0.05
+    kp1 = 30.0 # 50hz: 3.0, 200hz: 5.0
+    kd1 = 0.3 # 50hz: 0.5, 200hz: 0.5
+    kp2 = 30.0 # 50hz: 1.0, 200hz: 3.0
+    kd2 = 0.15 # 50hz: 0.05, 200hz: 0.05
     PD_effort = np.array([kp1*(theta_d[0]-theta[0]) + kd1*(omega_d[0]-omega[0]),
                           kp2*(theta_d[1]-theta[1]) + kd2*(omega_d[1]-omega[1])])
     return PD_effort

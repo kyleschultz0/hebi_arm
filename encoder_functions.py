@@ -1,8 +1,9 @@
 import serial
 import numpy as np
 from time import time, sleep
+import keyboard
 
-def initialize_encoders(com='COM3', baudrate=115200, timeout=1, num_init_loops=5):
+def initialize_encoders(com='COM4', baudrate=115200, timeout=1, num_init_loops=5):
     arduino = serial.Serial(com,baudrate,timeout=timeout)
     sleep(0.1)
     arduino.reset_input_buffer()
@@ -32,15 +33,20 @@ def get_encoder_feedback(arduino, num_encoders=2, joint_offsets=np.array([2.01, 
     reading = get_reading(arduino)
     theta = decode_reading(reading, num_encoders=num_encoders)
     theta -= joint_offsets
-    theta += np.array([-np.pi, -np.pi])
+    theta -= np.array([0.33238866, 6.19118518])
     theta *= -1
     return theta
     
 # to test functions:
 if __name__ == "__main__":
     arduino = initialize_encoders()
+    output = []
+    t0 = time()
     while True:
-        t0 = time()
         theta = get_encoder_feedback(arduino, num_encoders=2)
         print(theta)
-        print('Encoder Feedback Time:', time()-t0)
+        t = time()-t0
+        output += [[t,theta]]
+
+        if keyboard.is_pressed('q'):
+            break
