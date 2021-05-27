@@ -50,7 +50,7 @@ if __name__ == "__main__":
         theta = get_encoder_feedback(arduino, num_encoders=2)
         print(theta)
         t = time()-t0
-        output += [[t,theta]]
+        output += [[t,theta[0],theta[1]]]
 
         if keyboard.is_pressed('esc'):
             save_data(output)
