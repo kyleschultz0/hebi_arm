@@ -4,19 +4,23 @@ from time import time, sleep
 import keyboard
 
 def initialize_encoders(com='COM4', baudrate=115200, timeout=1, num_init_loops=5):
+    print("Beginnining Initialization")
     arduino = serial.Serial(com,baudrate,timeout=timeout)
     sleep(0.1)
     arduino.reset_input_buffer()
     for i in range(num_init_loops):
         try:
+            print("Getting Reading")
             get_reading(arduino)
         except:
+            print("Error Initializing... Retrying")
             pass
     return arduino
    
 def decode_reading(reading, num_encoders):
     encoder_output = np.zeros(num_encoders)
     string_list = reading.decode("utf-8").split(",")
+    # print(string_list)
     encoder_output[0] = float(string_list[0])*(2*np.pi/4096)
     encoder_output[1] = float(string_list[1])*(2*np.pi/4096)
     return encoder_output
@@ -33,12 +37,12 @@ def get_encoder_feedback(arduino, num_encoders=2, joint_offsets=np.array([2.01, 
     reading = get_reading(arduino)
     theta = decode_reading(reading, num_encoders=num_encoders)
     theta -= joint_offsets
-    theta -= np.array([0.33238866, 6.19118518])
+    theta -= np.array([0.33238866-0.02914563, 6.19118518-1.30081571])
     theta *= -1
     return theta
 
 def save_data(output):
-    np.savetxt("csv/EncoderTest1", np.array(output), delimiter=",")
+    np.savetxt("csv/EncoderTest1.csv", np.array(output), delimiter=",")
     print("Data saved")
     
 # to test functions:
@@ -57,7 +61,7 @@ if __name__ == "__main__":
             print("Stopping: User input stop command")
             break
 
-        if t > 20:
-            save_data(output)
-            print("Stopping: Time limit reached")
-            break
+        #if t > 20:
+        #    save_data(output)
+        #    print("Stopping: Time limit reached")
+        #    break
