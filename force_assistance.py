@@ -131,18 +131,15 @@ if __name__ == "__main__":
        # 
        print("Fy", f_adjust[1])
 
-       Jinv = np.matrix([[-np.sin(theta1 + theta2)/(L1*np.cos(theta1 + theta2)*np.sin(theta1) - L1*np.sin(theta1 + theta2)*np.cos(theta1)),
-                          -np.cos(theta1 + theta2)/(L1*np.cos(theta1 + theta2)*np.sin(theta1) - L1*np.sin(theta1 + theta2)*np.cos(theta1))],
+       #Jinv = np.matrix([[-np.sin(theta1 + theta2)/(L1*np.cos(theta1 + theta2)*np.sin(theta1) - L1*np.sin(theta1 + theta2)*np.cos(theta1)),
+       #                   -np.cos(theta1 + theta2)/(L1*np.cos(theta1 + theta2)*np.sin(theta1) - L1*np.sin(theta1 + theta2)*np.cos(theta1))],
 
-                         [(L2*np.sin(theta1 + theta2) + L1*np.sin(theta1))/(L1*L2*np.cos(theta1 + theta2)*np.sin(theta1) - L1*L2*np.sin(theta1 + theta2)*np.cos(theta1)),
-                          (L2*np.cos(theta1 + theta2) + L1*np.cos(theta1))/(L1*L2*np.cos(theta1 + theta2)*np.sin(theta1) - L1*L2*np.sin(theta1 + theta2)*np.cos(theta1))]])
+       #                  [(L2*np.sin(theta1 + theta2) + L1*np.sin(theta1))/(L1*L2*np.cos(theta1 + theta2)*np.sin(theta1) - L1*L2*np.sin(theta1 + theta2)*np.cos(theta1)),
+       #                   (L2*np.cos(theta1 + theta2) + L1*np.cos(theta1))/(L1*L2*np.cos(theta1 + theta2)*np.sin(theta1) - L1*L2*np.sin(theta1 + theta2)*np.cos(theta1))]])
 
-       #Jinv = np.matrix([[-(100*np.sin(theta1 + theta2))/(27*(np.cos(theta1 + theta2)*np.sin(theta1) - np.sin(theta1 + theta2)*np.cos(theta1))), 
-       #                -(100*np.cos(theta1 + theta2))/(27*(np.cos(theta1 + theta2)*np.sin(theta1) - np.sin(theta1 + theta2)*cos(theta1)))],
-       #
-       #               [(25*(16*np.sin(theta1 + theta2) + 9*np.sin(theta1)))/(108*(np.cos(theta1 + theta2)*np.sin(theta1) - np.sin(theta1 + theta2)*np.cos(theta1))),
-       #                (25*(16*np.cos(theta1 + theta2) + 9*np.cos(theta1)))/(108*(np.cos(theta1 + theta2)*np.sin(theta1) - np.sin(theta1 + theta2)*np.cos(theta1)))]])
-       # print("Jinv:", Jinv)
+       Jinv = np.matrix([[cos(theta1 + theta2)/(L1*sin(theta2)), sin(theta1 + theta2)/(L1*sin(theta2))],
+                         [-(L2*cos(theta1 + theta2) + L1*cos(theta1))/(L1*L2*sin(theta2)), -(L2*sin(theta1 + theta2) + L1*sin(theta1))/(L1*L2*sin(theta2))]])
+
        omega_d = Jinv @ K @ f_adjust
        omega_d = np.squeeze(np.asarray(omega_d))
        # print("Desired velocities:", omega_d)
