@@ -1,5 +1,4 @@
 from hebi_functions import initialize_hebi, get_hebi_feedback, send_hebi_position_command, send_hebi_effort_command
-from encoder_functions import initialize_encoders, get_encoder_feedback
 from trajectory_functions import trajectory
 
 import NetFT
@@ -116,18 +115,21 @@ if __name__ == "__main__":
        Fraw = sensor.getForce()
        # print(np.array([Fraw[0], Fraw[1], Fraw[2]])/1000000.0)
        F = np.array([Fraw[0], - 0.9*Fraw[1] + 0.42*Fraw[2]])/1000000.0    # Accounting for y force having z and y components in sensor frame
-       # print("Fx", F[0])
-       # print("Fy", F[1])
+       print("Fx", F[0])
+       print("Fy", F[1])
        # print("Force:", F)
        theta, omega, torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)  
        theta1 = theta[0]
        theta2 = theta[1]
-       theta_end = theta1 + theta2
+       theta_end = theta1 + theta2 - np.pi/2
+       print(theta_end)
        f_adjust = np.array([F[0]*np.sin(theta_end) + F[1]*np.cos(theta_end), F[1]*np.sin(theta_end) + F[0]*np.cos(theta_end)]) 
        # print("Theta 1:", theta1)
        # print("Theta 2:", theta2)
-       print("Fx", f_adjust[0])
-       print("Fy", f_adjust[1])
+       # print("Fx", f_adjust[0])
+       # 
+       # 
+       # print("Fy", f_adjust[1])
 
        Jinv = np.matrix([[-np.sin(theta1 + theta2)/(L1*np.cos(theta1 + theta2)*np.sin(theta1) - L1*np.sin(theta1 + theta2)*np.cos(theta1)),
                           -np.cos(theta1 + theta2)/(L1*np.cos(theta1 + theta2)*np.sin(theta1) - L1*np.sin(theta1 + theta2)*np.cos(theta1))],
