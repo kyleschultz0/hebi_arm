@@ -111,6 +111,7 @@ if __name__ == "__main__":
     i = 0
 
     t0 = time()
+    t1 = t0
 
     while True:
 
@@ -122,6 +123,10 @@ if __name__ == "__main__":
        theta2 = theta[1]
        theta_end = theta1 + theta2 - np.pi/2
        f_adjust = np.array([F[0]*np.cos(theta_end) - F[1]*np.sin(theta_end), F[0]*np.sin(theta_end) + F[1]*np.cos(theta_end)]) 
+       T = time() - t_1
+       t_1 = time()
+       f_adjust = force_filter(f_adjust, 3, T)
+        
 
        Jinv = np.matrix([[cos(theta1 + theta2)/(L1*sin(theta2)), sin(theta1 + theta2)/(L1*sin(theta2))],
                          [-(L2*cos(theta1 + theta2) + L1*cos(theta1))/(L1*L2*sin(theta2)), -(L2*sin(theta1 + theta2) + L1*sin(theta1))/(L1*L2*sin(theta2))]])
