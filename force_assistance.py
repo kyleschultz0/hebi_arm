@@ -121,17 +121,15 @@ if __name__ == "__main__":
        theta, omega, torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)  
        theta1 = theta[0]
        theta2 = theta[1]
-       theta_end = theta1 + theta2
-       f_adjust = np.array([F[0]*np.cos(theta_end) - F[1]*np.sin(theta_end), F[0]*np.sin(theta_end) + F[1]*np.cos(theta_end)]) 
        theta_end = theta1 + theta2 - np.pi/2
-       print(theta_end)
-       f_adjust = np.array([F[0]*np.sin(theta_end) + F[1]*np.cos(theta_end), F[1]*np.sin(theta_end) + F[0]*np.cos(theta_end)]) 
+       f_adjust = np.array([F[0]*np.cos(theta_end) - F[1]*np.sin(theta_end), F[0]*np.sin(theta_end) + F[1]*np.cos(theta_end)]) 
+
        # print("Theta 1:", theta1)
        # print("Theta 2:", theta2)
-       # print("Fx", f_adjust[0])
+       print("Fx", f_adjust[0])
        # 
        # 
-       # print("Fy", f_adjust[1])
+       print("Fy", f_adjust[1])
 
        Jinv = np.matrix([[-np.sin(theta1 + theta2)/(L1*np.cos(theta1 + theta2)*np.sin(theta1) - L1*np.sin(theta1 + theta2)*np.cos(theta1)),
                           -np.cos(theta1 + theta2)/(L1*np.cos(theta1 + theta2)*np.sin(theta1) - L1*np.sin(theta1 + theta2)*np.cos(theta1))],
