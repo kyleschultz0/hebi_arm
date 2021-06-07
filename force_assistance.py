@@ -9,76 +9,29 @@ from time import time, sleep
 
 #=== Global variables ===#
 
-# Initialize velocity and acceleration:
-theta1k_1 = 0 # theta1[k-1]
-theta2k_1 = 0 # theta2[k-1]
-omega1k_1 = 0 # omega1[k-1]
-omega2k_1 = 0 # omega2[k-1]
-
-# Initialize velocity filter:
+# Initialize force filter:
 y1k_1 = 0 # y1[k-1]
-v1k_1 = 0 # v1[k-1]
+f1k_1 = 0 # f1[k-1]
 y2k_1 = 0 # y2[k-1]
-v2k_1 = 0 # v2[k-1]
+f2k_1 = 0 # f2[k-1]
 
-# Initialize acceleration filter:
-z1k_1 = 0 # z1[k-1]
-a1k_1 = 0 # a1[k-1]
-z2k_1 = 0 # z2[k-1]
-a2k_1 = 0 # a2[k-1]
 
-def velocity(theta, T):
-    global theta1k_1
-    global theta2k_1
-    
-    omega1 = (1/T)*(theta[0] - theta1k_1)
-    omega2 = (1/T)*(theta[1] - theta2k_1)
-    theta1k_1 = theta[0]
-    theta2k_1 = theta[1]
-    return np.array([omega1,omega2])
-
-def velocity_filter(omega, cutoff_freq, T):
+def force_filter(force, cutoff_freq, T):
     # input freq in hz
     global y1k_1
-    global v1k_1
+    global f1k_1
     global y2k_1
-    global v2k_1
+    global f2k_1
     
     tau = 1/(2*pi*cutoff_freq)
-    y1 = (omega[0] + v1k_1 - (1-2*tau/T)*y1k_1)/(2*tau/T+1)
-    y2 = (omega[1] + v2k_1 - (1-2*tau/T)*y2k_1)/(2*tau/T+1)
+    y1 = (force[0] + f1k_1 - (1-2*tau/T)*y1k_1)/(2*tau/T+1)
+    y2 = (force[1] + f2k_1 - (1-2*tau/T)*y2k_1)/(2*tau/T+1)
     y1k_1 = y1 
-    v1k_1 = omega[0]
+    f1k_1 = force[0]
     y2k_1 = y2
-    v2k_1 = omega[1]
+    f2k_1 = force[1]
     return np.array([y1,y2])
     
-def acceleration(omega, T):
-    global omega1k_1
-    global omega2k_1
-    
-    alpha1 = (1/T)*(omega[0] - omega1k_1)
-    alpha2 = (1/T)*(omega[1] - omega2k_1)
-    omega1k_1 = omega[0]
-    omega2k_1 = omega[1]
-
-    return np.array([alpha1,alpha2])
-
-def acceleration_filter(alpha, cutoff_freq, T):
-    # input freq in hz
-    global z1k_1
-    global a1k_1
-    global z2k_1
-    global a2k_1
-    
-    tau = 1/(2*pi*cutoff_freq)
-    z1 = (alpha[0] + a1k_1 - (1-2*tau/T)*z1k_1)/(2*tau/T+1)
-    z2 = (alpha[1] + a2k_1 - (1-2*tau/T)*z2k_1)/(2*tau/T+1)
-    z1k_1 = z1 
-    a1k_1 = alpha[0]
-    z2k_1 = z2
-    a2k_1 = alpha[1]
-    return np.array([z1,z2])
 
 def PD_controller(theta,theta_d,omega,omega_d):    
     kp1 = 10.0 # 50hz: 3.0, 200hz: 5.0
