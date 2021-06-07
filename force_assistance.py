@@ -91,7 +91,7 @@ def PD_controller(theta,theta_d,omega,omega_d):
 
 
 def save_data(output):
-    np.savetxt("csv/assistance_2.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/assistance_3.csv", np.array(output), delimiter=",")
     print("Data saved")
 
 if __name__ == "__main__":
