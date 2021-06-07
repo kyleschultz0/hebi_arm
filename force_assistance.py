@@ -123,7 +123,7 @@ if __name__ == "__main__":
        theta1 = theta[0]
        theta2 = theta[1]
        theta_end = theta1 + theta2
-       f_adjust = np.array([F[0]*np.sin(theta_end) + F[1]*np.cos(theta_end), F[1]*np.sin(theta_end) + F[0]*np.cos(theta_end)]) 
+       f_adjust = np.array([F[0]*np.cos(theta_end) - F[1]*np.sin(theta_end), F[0]*np.sin(theta_end) + F[1]*np.cos(theta_end)]) 
        # print("Theta 1:", theta1)
        # print("Theta 2:", theta2)
        print("Fx", f_adjust[0])
