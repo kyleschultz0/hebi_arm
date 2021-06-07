@@ -20,7 +20,7 @@ def initialize_encoders(com='COM4', baudrate=115200, timeout=1, num_init_loops=5
 def decode_reading(reading, num_encoders):
     encoder_output = np.zeros(num_encoders)
     string_list = reading.decode("utf-8").split(",")
-    # print(string_list)
+    print(string_list)
     encoder_output[0] = float(string_list[0])*(2*np.pi/4096)
     encoder_output[1] = float(string_list[1])*(2*np.pi/4096)
     return encoder_output
@@ -42,7 +42,7 @@ def get_encoder_feedback(arduino, num_encoders=2, joint_offsets=np.array([2.01, 
     return theta
 
 def save_data(output):
-    np.savetxt("csv/EncoderTest1.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/EncoderTest2.csv", np.array(output), delimiter=",")
     print("Data saved")
     
 # to test functions:
