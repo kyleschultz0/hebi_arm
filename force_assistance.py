@@ -91,16 +91,16 @@ def PD_controller(theta,theta_d,omega,omega_d):
 
 
 def save_data(output):
-    np.savetxt("csv/PD_1.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/assistance_2.csv", np.array(output), delimiter=",")
     print("Data saved")
 
 if __name__ == "__main__":
-    freq = 10 # Hz
+    freq = 100 # Hz
     group, hebi_feedback, command = initialize_hebi()
     group.feedback_frequency = freq
     output = []
-    K = np.matrix([[0.1, 0],
-                   [0, 0.1]])
+    K = np.matrix([[0.2, 0],
+                   [0, 0.2]])
 
     sensor = NetFT.Sensor("192.168.0.11")
     sensor.tare()
@@ -110,39 +110,32 @@ if __name__ == "__main__":
 
     i = 0
 
+    t0 = time()
+
     while True:
 
        Fraw = sensor.getForce()
-       # print(np.array([Fraw[0], Fraw[1], Fraw[2]])/1000000.0)
        F = np.array([Fraw[0], - 0.9*Fraw[1] + 0.42*Fraw[2]])/1000000.0    # Accounting for y force having z and y components in sensor frame
-       # print("Fx", F[0])
-       # print("Fy", F[1])
-       # print("Force:", F)
+
        theta, omega, torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)  
        theta1 = theta[0]
        theta2 = theta[1]
        theta_end = theta1 + theta2 - np.pi/2
        f_adjust = np.array([F[0]*np.cos(theta_end) - F[1]*np.sin(theta_end), F[0]*np.sin(theta_end) + F[1]*np.cos(theta_end)]) 
-       print("Theta 1:", theta1)
-       print("Theta 2:", theta2)
-       # print("Fx", f_adjust[0])
-       # print("Fy", f_adjust[1])
-
-       #Jinv = np.matrix([[-np.sin(theta1 + theta2)/(L1*np.cos(theta1 + theta2)*np.sin(theta1) - L1*np.sin(theta1 + theta2)*np.cos(theta1)),
-       #                   -np.cos(theta1 + theta2)/(L1*np.cos(theta1 + theta2)*np.sin(theta1) - L1*np.sin(theta1 + theta2)*np.cos(theta1))],
-
-       #                  [(L2*np.sin(theta1 + theta2) + L1*np.sin(theta1))/(L1*L2*np.cos(theta1 + theta2)*np.sin(theta1) - L1*L2*np.sin(theta1 + theta2)*np.cos(theta1)),
-       #                   (L2*np.cos(theta1 + theta2) + L1*np.cos(theta1))/(L1*L2*np.cos(theta1 + theta2)*np.sin(theta1) - L1*L2*np.sin(theta1 + theta2)*np.cos(theta1))]])
 
        Jinv = np.matrix([[cos(theta1 + theta2)/(L1*sin(theta2)), sin(theta1 + theta2)/(L1*sin(theta2))],
                          [-(L2*cos(theta1 + theta2) + L1*cos(theta1))/(L1*L2*sin(theta2)), -(L2*sin(theta1 + theta2) + L1*sin(theta1))/(L1*L2*sin(theta2))]])
 
        omega_d = Jinv @ K @ f_adjust
        omega_d = np.squeeze(np.asarray(omega_d))
-       # print("Desired velocities:", omega_d)
 
        command.velocity = omega_d
-       # group.send_command(command)
+       group.send_command(command)
+
+       # Save data for troubleshooting
+       t = time()-t0
+       output += [[t, f_adjust[0], f_adjust[1], Fraw[0], Fraw[1], theta[0], theta[1], omega_d[0], omega_d[1]]]
+       # print(output)
 
        if i == 0:
            print("Ready to operate...")
@@ -150,5 +143,6 @@ if __name__ == "__main__":
 
 
        if keyboard.is_pressed('esc'):
+           save_data(output)
            break
 
