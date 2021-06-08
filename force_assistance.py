@@ -55,6 +55,15 @@ if __name__ == "__main__":
     K = np.matrix([[0.75, 0],
                    [0, 0.75]])
 
+    group_info = group.request_info()
+
+    if group_info is not None:
+        group_info.write_gains("csv/saved_gains.xml")
+
+    #group_cmd = hebi.GroupCommand(group.size)
+    #group_cmd.read_gains("csv/desired_gains.xml")
+    #group.send_command_with_acknowledgement(group_cmd)
+
     sensor = NetFT.Sensor("192.168.0.11")
     sensor.tare()
 
