@@ -91,8 +91,9 @@ if __name__ == "__main__":
        group.send_command(command)
 
        # Save data for troubleshooting
+       h_theta, h_omega, hf_torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)
        t = time()-t0
-       output += [[t, f_adjust[0], f_adjust[1], Fraw[0], Fraw[1], theta[0], theta[1], omega_d[0], omega_d[1]]]
+       output += [[t, f_adjust[0], f_adjust[1], Fraw[0], Fraw[1], theta[0], theta[1], omega_d[0], omega_d[1], h_omega[0], h_omega[1]]]
        # print(output)
 
        if i == 0:
