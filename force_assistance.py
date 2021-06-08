@@ -15,8 +15,6 @@ f1k_1 = 0 # f1[k-1]
 y2k_1 = 0 # y2[k-1]
 f2k_1 = 0 # f2[k-1]
 
-t_1 = 0
-
 
 def force_filter(force, cutoff_freq, T):
     # input freq in hz
@@ -46,21 +44,11 @@ def PD_controller(theta,theta_d,omega,omega_d):
 
 
 def save_data(output):
-    np.savetxt("csv/assistance_500hz.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/assistance_4.csv", np.array(output), delimiter=",")
     print("Data saved")
 
-def loop_timer(t0, T, print_loop_time=False):
-    global t_1
-    t = time()-t0
-    while (t - t_1) < T:
-        t = time()-t0
-    if print_loop_time:
-        print('Loop Time:', round(t-t_1, 8), 'seconds')
-    t_1 = t
-    return t
-
 if __name__ == "__main__":
-    freq = 0 # Hz
+    freq = 100 # Hz
     group, hebi_feedback, command = initialize_hebi()
     group.feedback_frequency = freq
     output = []
@@ -70,7 +58,11 @@ if __name__ == "__main__":
     group_info = group.request_info()
 
     if group_info is not None:
-        group_info.write_gains("gains/saved_gains.xml")
+        group_info.write_gains("csv/saved_gains.xml")
+
+    #group_cmd = hebi.GroupCommand(group.size)
+    #group_cmd.read_gains("csv/desired_gains.xml")
+    #group.send_command_with_acknowledgement(group_cmd)
 
     sensor = NetFT.Sensor("192.168.0.11")
     sensor.tare()
@@ -80,12 +72,11 @@ if __name__ == "__main__":
 
     i = 0
 
-    freq = 500
-    T = 1/freq
     t0 = time()
+    t1 = t0
+
     while True:
 
-       t = loop_timer(t0, T, print_loop_time=False)
        Fraw = sensor.getForce()
        F = np.array([Fraw[0], - 0.9*Fraw[1] + 0.42*Fraw[2]])/1000000.0    # Accounting for y force having z and y components in sensor frame
 
@@ -94,6 +85,8 @@ if __name__ == "__main__":
        theta2 = theta[1]
        theta_end = theta1 + theta2 - np.pi/2
        f_adjust = np.array([F[0]*np.cos(theta_end) - F[1]*np.sin(theta_end), F[0]*np.sin(theta_end) + F[1]*np.cos(theta_end)]) 
+       T = time() - t1
+       t1 = time()
        f_adjust = force_filter(f_adjust, 0.3, T)
         
 
