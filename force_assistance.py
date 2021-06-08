@@ -15,6 +15,8 @@ f1k_1 = 0 # f1[k-1]
 y2k_1 = 0 # y2[k-1]
 f2k_1 = 0 # f2[k-1]
 
+t_1 = 0
+
 
 def force_filter(force, cutoff_freq, T):
     # input freq in hz
@@ -47,8 +49,18 @@ def save_data(output):
     np.savetxt("csv/assistance_wofeedback.csv", np.array(output), delimiter=",")
     print("Data saved")
 
+def loop_timer(t0, T, print_loop_time=False):
+    global t_1
+    t = time()-t0
+    while (t - t_1) < T:
+        t = time()-t0
+    if print_loop_time:
+        print('Loop Time:', round(t-t_1, 8), 'seconds')
+    t_1 = t
+    return t
+
 if __name__ == "__main__":
-    freq = 100 # Hz
+    freq = 0 # Hz
     group, hebi_feedback, command = initialize_hebi()
     group.feedback_frequency = freq
     output = []
@@ -68,11 +80,12 @@ if __name__ == "__main__":
 
     i = 0
 
+    freq = 500
+    T = 1/freq
     t0 = time()
-    t1 = t0
-
     while True:
 
+       t = loop_timer(t0, T, print_loop_time=False)
        Fraw = sensor.getForce()
        F = np.array([Fraw[0], - 0.9*Fraw[1] + 0.42*Fraw[2]])/1000000.0    # Accounting for y force having z and y components in sensor frame
 
@@ -81,8 +94,6 @@ if __name__ == "__main__":
        theta2 = theta[1]
        theta_end = theta1 + theta2 - np.pi/2
        f_adjust = np.array([F[0]*np.cos(theta_end) - F[1]*np.sin(theta_end), F[0]*np.sin(theta_end) + F[1]*np.cos(theta_end)]) 
-       T = time() - t1
-       t1 = time()
        f_adjust = force_filter(f_adjust, 0.3, T)
         
 
@@ -96,9 +107,9 @@ if __name__ == "__main__":
        group.send_command(command)
 
        # Save data for troubleshooting
-       # h_theta, h_omega, hf_torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)
+       h_theta, h_omega, hf_torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)
        t = time()-t0
-       output += [[t, f_adjust[0], f_adjust[1], Fraw[0], Fraw[1], theta[0], theta[1], omega_d[0], omega_d[1]]]#, h_omega[0], h_omega[1]]]
+       output += [[t, f_adjust[0], f_adjust[1], Fraw[0], Fraw[1], theta[0], theta[1], omega_d[0], omega_d[1]]], h_omega[0], h_omega[1]]]
        # print(output)
 
        if i == 0:
