@@ -139,12 +139,11 @@ if __name__ == "__main__":
         omega = velocity(theta, T)
         omega = velocity_filter(omega, 5, T)
                        
-        t, theta_d, omega_d = trajectory(t, "trajectories/star0.csv")
+        t, theta_d, omega_d = trajectory(t, "trajectories/star0")
 
         #---------- Output feedback
         # effort = PD_controller(theta,theta_d,omega,omega_d)
         effort = PD_controller(h_theta,theta_d,h_omega,omega_d)
-        # effort = np.array([0, 0]);
 
 
         if i == 1:
