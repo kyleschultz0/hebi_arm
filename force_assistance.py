@@ -46,7 +46,7 @@ def PD_controller(theta,theta_d,omega,omega_d):
 
 
 def save_data(output):
-    np.savetxt("csv/assistance_wofeedback.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/assistance_500hz.csv", np.array(output), delimiter=",")
     print("Data saved")
 
 def loop_timer(t0, T, print_loop_time=False):
@@ -109,7 +109,7 @@ if __name__ == "__main__":
        # Save data for troubleshooting
        h_theta, h_omega, hf_torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)
        t = time()-t0
-       output += [[t, f_adjust[0], f_adjust[1], Fraw[0], Fraw[1], theta[0], theta[1], omega_d[0], omega_d[1]]], h_omega[0], h_omega[1]]]
+       output += [[t, f_adjust[0], f_adjust[1], Fraw[0], Fraw[1], theta[0], theta[1], omega_d[0], omega_d[1], h_omega[0], h_omega[1]]]
        # print(output)
 
        if i == 0:
