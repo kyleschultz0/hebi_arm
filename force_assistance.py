@@ -44,7 +44,7 @@ def PD_controller(theta,theta_d,omega,omega_d):
 
 
 def save_data(output):
-    np.savetxt("csv/assistance_4.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/assistance_wofeedback.csv", np.array(output), delimiter=",")
     print("Data saved")
 
 if __name__ == "__main__":
@@ -58,11 +58,7 @@ if __name__ == "__main__":
     group_info = group.request_info()
 
     if group_info is not None:
-        group_info.write_gains("csv/saved_gains.xml")
-
-    #group_cmd = hebi.GroupCommand(group.size)
-    #group_cmd.read_gains("csv/desired_gains.xml")
-    #group.send_command_with_acknowledgement(group_cmd)
+        group_info.write_gains("gains/saved_gains.xml")
 
     sensor = NetFT.Sensor("192.168.0.11")
     sensor.tare()
@@ -100,9 +96,9 @@ if __name__ == "__main__":
        group.send_command(command)
 
        # Save data for troubleshooting
-       h_theta, h_omega, hf_torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)
+       # h_theta, h_omega, hf_torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)
        t = time()-t0
-       output += [[t, f_adjust[0], f_adjust[1], Fraw[0], Fraw[1], theta[0], theta[1], omega_d[0], omega_d[1], h_omega[0], h_omega[1]]]
+       output += [[t, f_adjust[0], f_adjust[1], Fraw[0], Fraw[1], theta[0], theta[1], omega_d[0], omega_d[1]]]#, h_omega[0], h_omega[1]]]
        # print(output)
 
        if i == 0:
