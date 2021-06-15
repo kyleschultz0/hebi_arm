@@ -42,8 +42,8 @@ if __name__ == "__main__":
     group, hebi_feedback, command = initialize_hebi()
     group.feedback_frequency = freq
     output = []
-    K = np.matrix([[0.75, 0],
-                   [0, 0.75]])
+    K = np.matrix([[1, 0],
+                   [0, 1]])
 
     group_info = group.request_info()
 
