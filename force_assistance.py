@@ -53,8 +53,16 @@ if __name__ == "__main__":
     sensor = NetFT.Sensor("192.168.0.11")
     sensor.tare()
 
-    L1 = 0.29
-    L2 = 0.22
+    #=== Variables for 2 DOF ===#
+    #L1 = 0.29
+    #L2 = 0.22
+    #======#
+
+    #=== Variables for 3 DOF ===#
+    L1 = 0.268
+    L2 = 0.472
+    #======#
+
 
     i = 0
 
