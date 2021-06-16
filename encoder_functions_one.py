@@ -49,7 +49,7 @@ def get_encoder_feedback(arduino1, arduino2, num_encoders, joint_offsets=np.arra
     return theta
 
 def save_data(output):
-    np.savetxt("csv/EncoderTest_Updated.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/EncoderTest_outputsettling.csv", np.array(output), delimiter=",")
     print("Data saved")
     
 # to test functions:
