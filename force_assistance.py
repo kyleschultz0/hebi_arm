@@ -42,8 +42,8 @@ if __name__ == "__main__":
     group, hebi_feedback, command = initialize_hebi()
     group.feedback_frequency = freq
     output = []
-    K = np.matrix([[1, 0],
-                   [0, 1]])
+    K = np.matrix([[0.7, 0],
+                   [0, 0.7]])
 
     group_info = group.request_info()
 
@@ -81,7 +81,7 @@ if __name__ == "__main__":
        f_adjust = np.array([F[0]*np.cos(theta_end) - F[1]*np.sin(theta_end), F[0]*np.sin(theta_end) + F[1]*np.cos(theta_end)]) 
        T = time() - t1
        t1 = time()
-       f_adjust = force_filter(f_adjust, 0.5, T)
+       f_adjust = force_filter(f_adjust, 0.4, T)
         
 
        Jinv = np.matrix([[cos(theta1 + theta2)/(L1*sin(theta2)), sin(theta1 + theta2)/(L1*sin(theta2))],

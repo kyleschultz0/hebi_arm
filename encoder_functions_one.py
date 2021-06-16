@@ -26,8 +26,8 @@ def decode_reading(reading1, reading2, num_encoders):
     string_list1 = reading1.decode("utf-8").split(",")
     string_list2 = reading2.decode("utf-8").split(",")
     for i in range(num_encoders):
-        encoder_output1[i] = float(string_list1[i])*(2*np.pi/4096)
-        encoder_output2[i] = float(string_list2[i])*(2*np.pi/4096)
+        encoder_output1[i] = float(string_list1[i])*(2*np.pi/4096)  # Input
+        encoder_output2[i] = float(string_list2[i])*(2*np.pi/4096)  # In-tank
     encoder_output = np.concatenate([encoder_output1,encoder_output2])
     return encoder_output
 
@@ -40,7 +40,7 @@ def get_reading(arduino1, arduino2):
         reading2 = arduino2.readline()
     return reading1, reading2
 
-def get_encoder_feedback(arduino1, arduino2, num_encoders, joint_offsets=np.array([5.22013662-0.0076699, 1.09066034+0.02454369])):
+def get_encoder_feedback(arduino1, arduino2, num_encoders, joint_offsets=np.array([5.22780653, 1.16889336])):
     # joint_offsets - set in radians to change x/y position
     reading1, reading2 = get_reading(arduino1, arduino2)
     theta = decode_reading(reading1, reading2, num_encoders=num_encoders)
