@@ -40,7 +40,7 @@ def get_reading(arduino1, arduino2):
         reading2 = arduino2.readline()
     return reading1, reading2
 
-def get_encoder_feedback(arduino1, arduino2, num_encoders, joint_offsets=np.array([5.22780653-4.70011714, 1.16889336+1.46034971])):
+def get_encoder_feedback(arduino1, arduino2, num_encoders, joint_offsets=np.array([0, 0])):
     # joint_offsets - set in radians to change x/y position
     reading1, reading2 = get_reading(arduino1, arduino2)
     theta = decode_reading(reading1, reading2, num_encoders=num_encoders)
@@ -49,7 +49,7 @@ def get_encoder_feedback(arduino1, arduino2, num_encoders, joint_offsets=np.arra
     return theta
 
 def save_data(output):
-    np.savetxt("csv/EncoderTest_settling1.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/EncoderTest_dynamic.csv", np.array(output), delimiter=",")
     print("Data saved")
     
 # to test functions:
