@@ -3,7 +3,7 @@ import numpy as np
 from time import time, sleep
 import keyboard
 
-def initialize_encoders(com='COM4', baudrate=115200, timeout=1, num_init_loops=5):
+def initialize_encoders(com='COM6', baudrate=115200, timeout=1, num_init_loops=5):
     print("Beginnining Initialization")
     arduino = serial.Serial(com,baudrate,timeout=timeout)
     sleep(0.1)
@@ -20,7 +20,6 @@ def initialize_encoders(com='COM4', baudrate=115200, timeout=1, num_init_loops=5
 def decode_reading(reading, num_encoders):
     encoder_output = np.zeros(num_encoders)
     string_list = reading.decode("utf-8").split(",")
-    print(string_list)
     encoder_output[0] = float(string_list[0])*(2*np.pi/4096)
     encoder_output[1] = float(string_list[1])*(2*np.pi/4096)
     return encoder_output
@@ -32,12 +31,11 @@ def get_reading(arduino):
         reading = arduino.readline()
     return reading
 
-def get_encoder_feedback(arduino, num_encoders=2, joint_offsets=np.array([2.01, -0.856])):
+def get_encoder_feedback(arduino, num_encoders=2, joint_offsets=np.array([3.15846644+np.pi/2, 4.73233073])):
     # joint_offsets - set in radians to change x/y position
     reading = get_reading(arduino)
     theta = decode_reading(reading, num_encoders=num_encoders)
     theta -= joint_offsets
-    theta -= np.array([0.33238866-0.02914563, 6.19118518-1.30081571])
     theta *= -1
     return theta
 

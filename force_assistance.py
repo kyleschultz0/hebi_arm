@@ -1,5 +1,6 @@
 from hebi_functions import initialize_hebi, get_hebi_feedback, send_hebi_position_command, send_hebi_effort_command
 from trajectory_functions import trajectory
+from encoder_functions import initialize_encoders, get_encoder_feedback
 
 import NetFT
 import keyboard
@@ -42,8 +43,10 @@ if __name__ == "__main__":
     group, hebi_feedback, command = initialize_hebi()
     group.feedback_frequency = freq
     output = []
-    K = np.matrix([[0.7, 0],
-                   [0, 0.7]])
+    K = np.matrix([[1.25, 0],
+                   [0, 1.25]])
+
+    arduino = initialize_encoders()
 
     group_info = group.request_info()
 
@@ -54,13 +57,13 @@ if __name__ == "__main__":
     sensor.tare()
 
     #=== Variables for 2 DOF ===#
-    #L1 = 0.29
-    #L2 = 0.22
+    L1 = 0.29
+    L2 = 0.22
     #======#
 
     #=== Variables for 3 DOF ===#
-    L1 = 0.268
-    L2 = 0.472
+    # L1 = 0.268
+    # L2 = 0.472
     #======#
 
 
@@ -74,14 +77,18 @@ if __name__ == "__main__":
        Fraw = sensor.getForce()
        F = np.array([Fraw[0], - 0.9*Fraw[1] + 0.42*Fraw[2]])/1000000.0    # Accounting for y force having z and y components in sensor frame
 
+       theta_e = get_encoder_feedback(arduino, num_encoders=2)
        theta, omega, torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)  
+       theta = theta + np.array([0, np.pi/2])   # offsetting transform
        theta1 = theta[0]
        theta2 = theta[1]
        theta_end = theta1 + theta2 - np.pi/2
        f_adjust = np.array([F[0]*np.cos(theta_end) - F[1]*np.sin(theta_end), F[0]*np.sin(theta_end) + F[1]*np.cos(theta_end)]) 
        T = time() - t1
        t1 = time()
-       f_adjust = force_filter(f_adjust, 0.4, T)
+       f_adjust = force_filter(f_adjust, 0.5, T)
+
+       print("Theta:", theta, theta_e)
         
 
        Jinv = np.matrix([[cos(theta1 + theta2)/(L1*sin(theta2)), sin(theta1 + theta2)/(L1*sin(theta2))],
@@ -92,10 +99,11 @@ if __name__ == "__main__":
 
        command.velocity = omega_d
        group.send_command(command)
+       # print("Theta:", theta)
 
        # Save data
        t = time()-t0
-       output += [[t, f_adjust[0], f_adjust[1], Fraw[0], Fraw[1], theta[0], theta[1], omega_d[0], omega_d[1], omega[0], omega[1]]]
+       output += [[t, f_adjust[0], f_adjust[1], Fraw[0], Fraw[1], theta[0], theta[1], omega_d[0], omega_d[1], omega[0], omega[1], theta_e[0], theta_e[1]]]
 
        if i == 0:
            print("Ready to operate...")
