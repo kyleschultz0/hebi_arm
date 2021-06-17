@@ -103,7 +103,7 @@ if __name__ == "__main__":
 
        # Save data
        t = time()-t0
-       output += [[t, f_adjust[0], f_adjust[1], Fraw[0], Fraw[1], theta[0], theta[1], omega_d[0], omega_d[1], omega[0], omega[1], theta_e[0], theta_e[1]]]
+       output += [[t, theta[0], theta[1] ,theta_e[0], theta_e[1], omega_d[0], omega_d[1], omega[0], omega[1], torque[0], torque[1]]]
 
        if i == 0:
            print("Ready to operate...")
