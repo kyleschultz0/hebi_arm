@@ -70,7 +70,7 @@ if __name__ == "__main__":
     i = 0
 
     t0 = time()
-    t1 = t0
+    t1 = t0 
 
     while True:
 
@@ -93,7 +93,7 @@ if __name__ == "__main__":
 
        Jinv = np.matrix([[cos(theta1 + theta2)/(L1*sin(theta2)), sin(theta1 + theta2)/(L1*sin(theta2))],
                          [-(L2*cos(theta1 + theta2) + L1*cos(theta1))/(L1*L2*sin(theta2)), -(L2*sin(theta1 + theta2) + L1*sin(theta1))/(L1*L2*sin(theta2))]])
-
+        
        omega_d = Jinv @ K @ f_adjust
        omega_d = np.squeeze(np.asarray(omega_d))
 
