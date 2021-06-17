@@ -35,7 +35,7 @@ def force_filter(force, cutoff_freq, T):
 
 
 def save_data(output):
-    np.savetxt("csv/assistance_output2.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/assistance_star1.csv", np.array(output), delimiter=",")
     print("Data saved")
 
 if __name__ == "__main__":
