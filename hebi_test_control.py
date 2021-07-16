@@ -16,6 +16,11 @@ import pandas as pd
 from time import time
 import os
 
+def save_data(output):
+    np.savetxt("csv/assistance_star1.csv", np.array(output), delimiter=",")
+    print("Data saved")
+
+
 
 e_theta = 1
 
@@ -24,35 +29,21 @@ if __name__ == "__main__":
     group, hebi_feedback, command = initialize_hebi()
     group.feedback_frequency = 100
     arduino = initialize_encoders()
-    initialize_trajectory(50)
+    traj = initialize_trajectory("trajectories_sin02.csv")
     t0 = time()
     while True:
-        h_theta, h_omega, hf_torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)
-        # print('HEBI Omega:', h_omega)
-        # print('HEBI Feedback Torque:', hf_torque)
-        # print('HEBI Command Torque:', hc_torque)
-        e_theta = get_encoder_feedback(arduino) 
-        print('HEBI angles:', h_theta)
-        print('encoder angles:', e_theta)
+
+        theta_e = get_encoder_feedback(arduino, num_encoders=2)
+        theta, omega, torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)
         t = time() - t0
 
-        theta = trajectory(t, "trajectories/combined_trajectories.csv")
+        theta = trajectory(t, traj)
         command.position = theta
         send_hebi_position_command(group, command)        
-        hc_torque = np.array([0,0]) # no command torque
+        # hc_torque = np.array([0,0]) # no command torque
 
-
-        try:
-            with open('csv/test_data_full.csv', mode='a') as data_file:
-                 data_file = csv.writer(data_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-                 data_file.writerow([t, 
-                                     h_theta[0], h_theta[1], 
-                                     h_omega[0], h_omega[1], 
-                                     hf_torque[0], hf_torque[1],
-                                     hc_torque[0], hc_torque[1],
-                                     e_theta[0], e_theta[1]])        
-        except:
-            print("Failed to write to testa data CSV in")
+        t = time()-t0
+        output += [[t, theta[0], theta[1] ,theta_e[0], theta_e[1], omega_d[0], omega_d[1], omega[0], omega[1], torque[0], torque[1]]]
         
         if hebi_limit_stop_flag: 
             print("Stopping: HEBI joints past limits")
