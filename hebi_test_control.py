@@ -17,7 +17,7 @@ from time import time
 import os
 
 def save_data(output):
-    np.savetxt("csv/sin002_1.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/sin05_1.csv", np.array(output), delimiter=",")
     print("Data saved")
 
 
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     group, hebi_feedback, command = initialize_hebi()
     group.feedback_frequency = 100
     arduino = initialize_encoders()
-    traj = initialize_trajectory("csv/trajectories_sin02.csv")
+    traj = initialize_trajectory("csv/trajectories_sin05.csv")
     t0 = time()
     theta_d = np.array([0, 0])
     output = []
@@ -41,7 +41,6 @@ if __name__ == "__main__":
         t = time() - t0
 
         theta_d = trajectory(t, traj)
-        print("Main theta:", theta_d)
         command.position = theta_d
         send_hebi_position_command(group, command)        
         # hc_torque = np.array([0,0]) # no command torque
