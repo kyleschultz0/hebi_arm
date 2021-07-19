@@ -88,14 +88,19 @@ if __name__ == "__main__":
        t1 = time()
        f_adjust = force_filter(f_adjust, 0.5, T)
 
-       print("Theta:", theta, theta_e)
+       # print("Theta:", theta, theta_e)
         
 
        Jinv = np.matrix([[cos(theta1 + theta2)/(L1*sin(theta2)), sin(theta1 + theta2)/(L1*sin(theta2))],
                          [-(L2*cos(theta1 + theta2) + L1*cos(theta1))/(L1*L2*sin(theta2)), -(L2*sin(theta1 + theta2) + L1*sin(theta1))/(L1*L2*sin(theta2))]])
         
        omega_d = Jinv @ K @ f_adjust
+
+       print("Before:", omega_d)
+
        omega_d = np.squeeze(np.asarray(omega_d))
+
+       print("After:", omega_d)
 
        command.velocity = omega_d
        group.send_command(command)

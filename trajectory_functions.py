@@ -29,7 +29,8 @@ import numpy as np
 #    os.chdir('..')
 
 def initialize_trajectory(filepath):
-    df = pd.read_csv(filepath)
+    df = pd.read_csv(filepath, names=["t", "theta1", "theta2"])
+    # print(df)
     return(df)
 
     
@@ -48,18 +49,14 @@ def trajectoryold(t, filepath):
 def trajectory(t, df):
     #df = pd.read_csv(filepath,
     #                 names=["t", "omega1", "omega2", "theta1", "theta2"])
+    # print(df)
     tTraj = df.t
     theta1 = df.theta1
     theta2 = df.theta2
-    theta1 = np.interp(t, tTraj, theta1)
-    theta2 = np.interp(t, tTraj, theta2)
-    theta = np.array([theta1, theta2])
-    omega1 = df.omega1
-    omega2 = df.omega2
-    omega1 = np.interp(t, tTraj, omega1)
-    omega2 = np.interp(t, tTraj, omega2)
-    omega = np.array([omega1, omega2])
-    return t, theta, omega
+    theta1d = np.interp(t, tTraj, theta1)
+    theta2d = np.interp(t, tTraj, theta2)
+    theta = np.array([theta1d, theta2d])
+    return theta
 
 # to test functions:
 if __name__ == "__main__":
