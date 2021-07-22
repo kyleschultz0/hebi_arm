@@ -17,7 +17,7 @@ from time import time
 import os
 
 def save_data(output):
-    np.savetxt("csv/sin01_cables_highT.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/nosig_nocables_PI.csv", np.array(output), delimiter=",")
     print("Data saved")
 
 
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     t0 = time()
     theta_d = np.array([0, 0])
     output = []
-    log_file_location = group.start_log("C:/Users/Student/Source/Repos/hebi_arm/csv", 'sin01_cables_highT.hebilog')
+    log_file_location = group.start_log("C:/Users/Student/Source/Repos/hebi_arm/csv", 'nosig_nocables_PI.hebilog')
 
     while True:
 
@@ -42,6 +42,7 @@ if __name__ == "__main__":
         t = time() - t0
 
         theta_d = trajectory(t, traj)
+        theta_d = np.array([pi/4, -pi/4])
         command.position = theta_d
         send_hebi_position_command(group, command)        
         # hc_torque = np.array([0,0]) # no command torque
