@@ -17,7 +17,7 @@ from time import time
 import os
 
 def save_data(output):
-    np.savetxt("csv/nosig_nocables_PI10.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/nosig_nocables_PI10_2.csv", np.array(output), delimiter=",")
     print("Data saved")
 
 
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     t0 = time()
     theta_d = np.array([0, 0])
     output = []
-    log_file_location = group.start_log("C:/Users/Student/Source/Repos/hebi_arm/csv", 'nosig_nocables_PI10.hebilog')
+    log_file_location = group.start_log("C:/Users/Student/Source/Repos/hebi_arm/csv", 'nosig_nocables_PI10_2.hebilog')
 
     while True:
 
