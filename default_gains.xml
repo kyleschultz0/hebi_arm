@@ -7,7 +7,7 @@
     <kd>0 0</kd>
     <feed_forward>0 0 </feed_forward>
     <dead_zone>0 0</dead_zone>
-    <i_clamp>1 1</i_clamp>
+    <i_clamp>3 3</i_clamp>
     <punch>0 0</punch>
     <min_target>-inf -inf</min_target>
     <max_target>inf inf</max_target>
