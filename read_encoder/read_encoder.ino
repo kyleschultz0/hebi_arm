@@ -13,7 +13,7 @@
 #define set_zero_point 0x70 //set zero point
 
 //set the chip select pin for the AMT20
-int SSS[] = {9,10}; // SSS pins in order of encoder connection
+int SSS[] = {8, 9,10}; // SSS pins in order of encoder connection
 
 //Arduino uses a setup function for all program initializations
 void setup() 
@@ -47,7 +47,7 @@ void loop()
   uint16_t currentPosition;   //this 16 bit variable will hold our 12-bit position
   byte serial_reading;
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 3; i++) {
       //reset the timoutCounter;
       timeoutCounter = 0;
 
