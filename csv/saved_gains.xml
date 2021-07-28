@@ -3,11 +3,11 @@
 	<control_strategy>4 4</control_strategy>
 	<position>
 		<kp>50.000000 30.000000</kp>
-		<ki>0.000000 0.000000</ki>
+		<ki>10.000000 10.000000</ki>
 		<kd>0.000000 0.000000</kd>
 		<feed_forward>0.000000 0.000000</feed_forward>
 		<dead_zone>0.000000 0.000000</dead_zone>
-		<i_clamp>1.000000 1.000000</i_clamp>
+		<i_clamp>2.000000 2.000000</i_clamp>
 		<punch>0.000000 0.000000</punch>
 		<min_target>-inf -inf</min_target>
 		<max_target>inf inf</max_target>

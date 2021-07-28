@@ -46,8 +46,8 @@ if __name__ == "__main__":
     K = np.matrix([[1.25, 0],
                    [0, 1.25]])
 
-    Kf = np.matrix([[0.25, 0],
-                  [0, 0.25]])
+    Kf = np.matrix([[15, 0],
+                  [0, 15]])
 
     arduino = initialize_encoders()
 
@@ -110,13 +110,14 @@ if __name__ == "__main__":
        print("After:", omega_d)
 
        # command.velocity = omega_d
-       command.torque = torque_d
+       command.effort = torque_d
        group.send_command(command)
        # print("Theta:", theta)
 
        # Save data
        t = time()-t0
-       output += [[t, theta[0], theta[1] ,theta_e[0], theta_e[1], omega_d[0], omega_d[1], omega[0], omega[1], torque[0], torque[1]]]
+       # output += [[t, theta[0], theta[1] ,theta_e[0], theta_e[1], omega_d[0], omega_d[1], omega[0], omega[1], torque[0], torque[1]]]
+       output += [[t, theta[0], theta[1] , torque_d[0], torque_d[1], torque[0], torque[1], f_adjust[0], f_adjust[1]]]
 
        if i == 0:
            print("Ready to operate...")
