@@ -35,7 +35,7 @@ def force_filter(force, cutoff_freq, T):
 
 
 def save_data(output):
-    np.savetxt("csv/assistance_star1.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/assistance_force.csv", np.array(output), delimiter=",")
     print("Data saved")
 
 if __name__ == "__main__":
@@ -45,6 +45,9 @@ if __name__ == "__main__":
     output = []
     K = np.matrix([[1.25, 0],
                    [0, 1.25]])
+
+    Kf = np.matrix([[0.25, 0],
+                  [0, 0.25]])
 
     arduino = initialize_encoders()
 
@@ -93,16 +96,21 @@ if __name__ == "__main__":
 
        Jinv = np.matrix([[cos(theta1 + theta2)/(L1*sin(theta2)), sin(theta1 + theta2)/(L1*sin(theta2))],
                          [-(L2*cos(theta1 + theta2) + L1*cos(theta1))/(L1*L2*sin(theta2)), -(L2*sin(theta1 + theta2) + L1*sin(theta1))/(L1*L2*sin(theta2))]])
+
+       Jt = np.matrix([[- L2*sin(theta1 + theta2) - L1*sin(theta1), L2*cos(theta1 + theta2) + L1*cos(theta1)],
+                       [-L2*sin(theta1 + theta2), L2*cos(theta1 + theta2)]])
         
        omega_d = Jinv @ K @ f_adjust
-
+       torque_d = Jt @ Kf @ f_adjust
        print("Before:", omega_d)
 
        omega_d = np.squeeze(np.asarray(omega_d))
+       torque_d = np.squeeze(np.asarray(torque_d))
 
        print("After:", omega_d)
 
-       command.velocity = omega_d
+       # command.velocity = omega_d
+       command.torque = torque_d
        group.send_command(command)
        # print("Theta:", theta)
 
