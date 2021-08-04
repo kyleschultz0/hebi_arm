@@ -13,7 +13,7 @@
 #define set_zero_point 0x70 //set zero point
 
 //set the chip select pin for the AMT20
-int SSS[] = {9,10}; // SSS pins in order of encoder connection
+int SSS[] = {8, 9,10}; // SSS pins in order of encoder connection
 
 //Arduino uses a setup function for all program initializations
 void setup() 
@@ -27,6 +27,7 @@ void setup()
   pinMode(MISO, INPUT);
   pinMode(SSS[0], OUTPUT);
   pinMode(SSS[1], OUTPUT);
+  pinMode(SSS[2], OUTPUT);
 
   //Initialize SPI using the SPISettings(speedMaxium, dataOrder, dataAMode) function
   //For our settings we will use a clock rate of 500kHz, and the standard SPI settings
@@ -37,6 +38,7 @@ void setup()
   //of the CS pin as opposed to the SPI.begin() function that does this for us.
   digitalWrite(SSS[0], HIGH);
   digitalWrite(SSS[1], HIGH);  
+  digitalWrite(SSS[2], HIGH);  
 }
 
 //After the setup() method this loop gets entered and is the main() function for our program
@@ -47,7 +49,7 @@ void loop()
   uint16_t currentPosition;   //this 16 bit variable will hold our 12-bit position
   byte serial_reading;
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 3; i++) {
       //reset the timoutCounter;
       timeoutCounter = 0;
 
@@ -87,7 +89,7 @@ void loop()
       }
       
       Serial.print(currentPosition);
-      if(i < 1) {
+      if(i < 2) {
         // add comma in between readings
         Serial.write(",");
       }

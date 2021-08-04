@@ -10,20 +10,16 @@ opts.Delimiter = ",";
 
 %% For velocity assistance ------------------------------------------------
 
-opts.VariableNames = ["t", "h_theta1", "h_theta2", "h_omega1", "h_omega2",...
-    "f_torque1", "f_torque2", "c_torque1", "c_torque2", "e_theta1", "e_theta2"];
+% opts.VariableNames = ["t", "h_theta1", "h_theta2", "h_omega1", "h_omega2",...
+%     "f_torque1", "f_torque2", "c_torque1", "c_torque2", "e_theta1", "e_theta2"];
 
-opts.VariableTypes = ["double", "double", "double", "double", "double",...
-    "double", "double", "double", "double", "double", "double"];
-% -------------------------------------------------------------------------
-
-%% For force assistance ---------------------------------------------------
-% opts.VariableNames = ["t", "h_theta1", "h_theta2", "torqued1", "torqued2",...
-%     "torque1", "torque2", "f_adjust1", "f_adjust2", "e_theta1", "e_theta2"];
-% 
 % opts.VariableTypes = ["double", "double", "double", "double", "double",...
-%     "double", "double", "double", "double"];
+%     "double", "double", "double", "double", "double", "double"];
 % -------------------------------------------------------------------------
+
+%% For force assistance ------------------
+opts.VariableNames = ["t", "h_theta1", "h_theta2", "torqued1", "torqued2",...
+    "torque1", "torque2", "f_adjust1", "f_adjust2", "e_theta1", "e_theta2"];
 
 
 
