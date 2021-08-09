@@ -17,7 +17,7 @@ from time import time
 import os
 
 def save_data(output):
-    np.savetxt("csv/trajectories_5sin05_out.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/trajectories_5sin05_out2.csv", np.array(output), delimiter=",")
     print("Data saved")
 
 
