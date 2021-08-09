@@ -2,11 +2,11 @@
 
 clc; clear all; close all;
 
-f = 0.1;    % frequency (Hz)
-A = 4;
-outputFile = "trajectories_4sin01.csv";
+f = 0.5;    % frequency (Hz)
+A = 3;
+outputFile = "trajectories_3sin05.csv";
 
-t = linspace(0, 15, 2001)';
+t = linspace(0, 25, 2001)';
 x2 = 0.*t;
 x1 = A*sin(2*pi*f*t);
 traj = [t x1 x2];
