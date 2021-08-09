@@ -17,7 +17,7 @@ from time import time
 import os
 
 def save_data(output):
-    np.savetxt("csv/weights_test.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/nosig_nocables_PI10_2.csv", np.array(output), delimiter=",")
     print("Data saved")
 
 
@@ -27,36 +27,38 @@ e_theta = 1
 
 if __name__ == "__main__": 
     group, hebi_feedback, command = initialize_hebi()
-    group.feedback_frequency = 100
+    group.feedback_frequency = 150
     arduino = initialize_encoders()
     traj = initialize_trajectory("csv/trajectories_sin01.csv")
     t0 = time()
     theta_d = np.array([0, 0])
     output = []
-    log_file_location = group.start_log("C:/Users/Student/Source/Repos/hebi_arm/csv", 'weights_test')
+    log_file_location = group.start_log("C:/Users/Student/Source/Repos/hebi_arm/csv", 'nosig_nocables_PI10_2.hebilog')
 
     while True:
 
         theta_e = get_encoder_feedback(arduino, num_encoders=2)
         theta, omega, torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)
         t = time() - t0
+        #theta_d = trajectory(t, traj)
+        #theta_d = np.array([np.pi/4, -np.pi/4])
+        #command.effort = theta_d
+        #send_hebi_position_command(group, command)
 
-        theta_d = trajectory(t, traj)
-        theta_d = np.array([np.pi/4, -np.pi/4])
-        command.effort = np.array([0, -3])
-        # command.position = theta_d
-        group.send_command(command)(group, command)        
+        effort_d = trajectory(t, traj)
+        command.effort = effort_d
+        group.send_command(command)        
         # hc_torque = np.array([0,0]) # no command torque
 
         t = time()-t0
-        output += [[t, theta[0], theta[1] ,theta_e[0], theta_e[1], theta_d[0], theta_d[1], omega[0], omega[1], torque[0], torque[1]]]
+        output += [[t, theta[0], theta[1] ,theta_e[0], theta_e[1], omega[0], omega[1], effort_d[0], effort_d[1], torque[0], torque[1]]]
         
         if hebi_limit_stop_flag: 
             print("Stopping: HEBI joints past limits")
             break
 
         if keyboard.is_pressed('esc'):
-            # save_data(output)
+            save_data(output)
             group.stop_log()
             break
         
