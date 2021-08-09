@@ -59,7 +59,7 @@ if __name__ == "__main__":
     output = []
     t0 = time()
     while True:
-        theta = get_encoder_feedback(arduino1, arduino2, num_encoders=1)
+        theta = get_encoder_feedback(arduino1, arduino2, num_encoders=3)
         print(theta)
         t = time()-t0
         output += [[t,theta[0],theta[1]]]

@@ -5,7 +5,7 @@
 #define baudRate 115200
 
 //this will be our SPI timout limit
-#define timoutLimit 500
+#define timoutLimit 200
 
 //SPI commands used by the AMT20
 #define nop 0x00            //no operation
@@ -48,19 +48,26 @@ void loop()
   uint8_t timeoutCounter;     //our timeout incrementer
   uint16_t currentPosition;   //this 16 bit variable will hold our 12-bit position
   byte serial_reading;
+  //Serial.write("I entered main! \n");
 
     for (int i = 0; i < 3; i++) {
       //reset the timoutCounter;
       timeoutCounter = 0;
+      //Serial.write("I entered for loop, iteration: ");
+      //Serial.print(i);
+      //Serial.write("\n");
 
       //send the rd_pos command to have the AMT20 begin obtaining the current position
       data = SPIWrite(rd_pos,SSS[i]);
     
-      //we need to send nop commands while the encoder proceSSSes the current position. We
+      //we need to send nop commands while the encoder processes the current position. We
       //will keep sending them until the AMT20 echos the rd_pos command, or our timeout is reached.
       while (data != rd_pos && timeoutCounter++ < timoutLimit)
       {
         data = SPIWrite(nop,SSS[i]);
+        //Serial.write("timeoutCounter = ");
+        //Serial.print(timeoutCounter);
+        //Serial.write("\n");
       }
     
       if (timeoutCounter < timoutLimit) //rd_pos echo received
@@ -75,7 +82,7 @@ void loop()
         //OR the next byte with the current position
         currentPosition |= SPIWrite(nop,SSS[i]);
 
-        //Serial.write("I know my currenct position!");
+        //Serial.write("I know my current position! \n");
       }
       else //timeout reached
       {
