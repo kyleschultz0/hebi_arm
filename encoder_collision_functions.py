@@ -44,7 +44,6 @@ class Encoder:
         encoder_outputs = np.zeros((len(self.arduinos), self.num_encoders))
         string_lists=[]
         for reading in readings:
-            print("Reading =", reading)
             string_lists.append(reading.decode("utf-8").split(","))
        
         for j,string_list in enumerate(string_lists):
@@ -60,7 +59,7 @@ class Encoder:
         '''
         readings=[None for _ in self.arduinos]
         for i,arduino in enumerate(self.arduinos):
-            while readings[i]:
+            while not readings[i]:
                 arduino.write(b'b') # send any byte to call reading, sending 'b'
                 readings[i]=arduino.readline()
 
