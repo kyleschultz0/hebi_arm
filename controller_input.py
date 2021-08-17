@@ -11,7 +11,8 @@ def initialize_joystick():
 
 def get_axis(joystick):
     joystick.init()
-    axis = np.array([joystick.get_axis(0), joystick.get_axis(1)])
+    pygame.event.get()
+    axis = np.array([-joystick.get_axis(0), joystick.get_axis(1)])
     return axis
 
 
@@ -24,7 +25,6 @@ if __name__ == "__main__":
         if keyboard.is_pressed('esc'):
             done = True
 
-        pygame.event.get()
         axis = get_axis(joystick)
         print("Axis: ", axis, "\n")
 

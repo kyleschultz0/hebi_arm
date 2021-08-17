@@ -10,7 +10,6 @@ def initialize_encoders(com='COM6', baudrate=115200, timeout=1, num_init_loops=5
     arduino.reset_input_buffer()
     for i in range(num_init_loops):
         try:
-            print("Getting Reading")
             get_reading(arduino)
         except:
             print("Error Initializing... Retrying")
