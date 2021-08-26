@@ -4,12 +4,12 @@ from time import time, sleep
 import keyboard
 
 class Encoder:
-    def __init__(self,num_encoders,com=['COM4'], baudrate=115200, timeout=1, num_init_loops=5, joint_offsets=None):
+    def __init__(self,num_encoders,com=['COM6'], baudrate=115200, timeout=1, num_init_loops=5, joint_offsets=np.array([5.96258332, 3.21829169, 5.23394245])):
         '''
         Obejct builder
         '''
         self.num_encoders=num_encoders
-        if joint_offsets:
+        if joint_offsets.any:
             self.joint_offsets=joint_offsets
         else:
             self.joint_offsets=np.zeros(num_encoders*len(com))
@@ -74,13 +74,21 @@ class Encoder:
         theta = self.decode_reading(readings)
         theta -= self.joint_offsets
         theta *= -1
+
+        if theta[0] > np.pi:
+            theta[0] = theta[0] - 2*np.pi
+        if theta[1] > np.pi:
+            theta[1] = theta[1] - 2*np.pi
+        if theta[2] > np.pi:
+            theta[2] = theta[2] - 2*np.pi
+
         return theta
    
-    def save_data(output):
+    def save_data(self, output):
         '''
         save data to csv
         '''
-        np.savetxt("csv/EncoderTest_dynamic.csv", np.array(output), delimiter=",")
+        np.savetxt("csv/EncoderTest_dynamic2.csv", np.array(output), delimiter=",")
         print("Data saved")
    
 # to test functions:
@@ -93,7 +101,8 @@ if __name__ == "__main__":
         theta = encoder.get_encoder_feedback()
         print(theta)
         t = time()-t0
-        output += [[t,theta[0],theta[1]]]
+        output += [[t,theta[0],theta[1], theta[2]]]
+        sleep(0.1)
 
         if keyboard.is_pressed('esc'):
             encoder.save_data(output)
