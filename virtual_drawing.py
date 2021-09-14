@@ -1,6 +1,7 @@
 from tkinter import *
 import tkinter.font as font
 import encoder_functions
+from PIL import Image, ImageTk
 
 
 app = Tk()
@@ -11,8 +12,8 @@ arduino = initialize_encoders()
 bigFont = font.Font(size = 12)
 
 
-def drawEncoder()
-    theta = get_encoder_feedback(arduino, num_encoders=2)
+#def drawEncoder()
+#    theta = get_encoder_feedback(arduino, num_encoders=2)
     
 
 def get_x_and_y(event):
@@ -38,6 +39,11 @@ buttonOn.pack(side = LEFT)
 
 canvas.bind("<Button-1>", get_x_and_y)
 canvas.bind("<B1-Motion>", draw_smth)
+
+image = Image.open("star.jpg")
+image = image.resize((1000,1000), Image.ANTIALIAS)
+image = ImageTk.PhotoImage(image)
+canvas.create_image(0,0, image=image, anchor='nw')
 
 
 
