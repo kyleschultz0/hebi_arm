@@ -2,8 +2,12 @@ import tkinter
 from time import time, sleep
 import pandas as pd
 import numpy as np
-import encoder_functions
+from encoder_functions import initialize_encoders, get_encoder_feedback
 import keyboard
+from controller_input import initialize_joystick, get_axis
+from controller_operation import controller_operation
+from hebi_functions import initialize_hebi, get_hebi_feedback, send_hebi_position_command, send_hebi_effort_command
+
 
  
 # width of the animation window
@@ -68,16 +72,19 @@ def animate_ball(window,canvas,pos):
 def encoder_draw(window,canvas,arduino, L1, L2):
     theta = get_encoder_feedback(arduino, num_encoders=2)
     pos = 1000*np.array([L1*np.sin(theta[0]) + L2*np.cos(theta[1]), L1*np.cos(theta[0])-L2*np.sin(theta[1])])
+    pos = pos + np.array([400, 400])
     print(pos)
     ball = canvas.create_oval(pos[0]-encoder_ball_radius,
             pos[1]-encoder_ball_radius,
             pos[0]+encoder_ball_radius,
             pos[1]+encoder_ball_radius,
-            fill="black")
+            fill="white")
     window.update()
 
 if __name__ == "__main__":
     arduino = initialize_encoders()
+    joystick = initialize_joystick()
+    group, hebi_feedback, command = initialize_hebi()
     animation_window = create_animation_window()
     animation_canvas = create_animation_canvas(animation_window)
     traj = initialize_trajectory("lissajous_005.csv")
@@ -87,6 +94,10 @@ if __name__ == "__main__":
         pos = trajectory(t, traj)
         animate_ball(animation_window,animation_canvas,pos)
         encoder_draw(animation_window,animation_canvas,arduino, L1, L2)
+        t1 = t0
+        T = time() - t1
+        t1 = time()
+        controller_operation(joystick, group, hebi_feedback, command, L1, L2, T)
         # print(theta)
 
         if keyboard.is_pressed('esc'):
