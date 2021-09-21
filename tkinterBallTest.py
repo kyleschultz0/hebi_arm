@@ -50,14 +50,6 @@ def animate_ball(window,canvas,traj):
             traj.x[0]+animation_ball_radius,
             traj.y[0]+animation_ball_radius,
             fill="red")
-    for i in range(n-1):
-        xinc = traj.x[i+1] - traj.x[i] 
-        yinc = traj.y[i+1] - traj.y[i] 
-        canvas.place(ball,xinc,yinc)
-        window.update()
-        time.sleep(animation_refresh_seconds)
-        ball_pos = canvas.coords(ball)
-        print(ball_pos)
 
 
 if __name__ == "__main__":

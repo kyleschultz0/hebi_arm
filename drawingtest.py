@@ -12,8 +12,21 @@ animation_window_width=1000
 animation_window_height=1000
 # radius of the ball
 animation_ball_radius = 10
+# radius of the encoder ball
+encoder_ball_radius = 5
 # delay between successive frames in seconds
 animation_refresh_seconds = 0.01
+
+#=== Variables for 2 DOF ===#
+L1 = 0.29
+L2 = 0.22
+#======#
+
+#=== Variables for 3 DOF ===#
+# L1 = 0.268
+# L2 = 0.472
+#======#
+
  
 # The main window of the animation
 def create_animation_window():
@@ -45,7 +58,6 @@ def trajectory(t, df):
  
 # Create and animate ball in an infinite loop
 def animate_ball(window,canvas,pos):
-    print(pos)
     ball = canvas.create_oval(pos[0]-animation_ball_radius,
             pos[1]-animation_ball_radius,
             pos[0]+animation_ball_radius,
@@ -53,9 +65,19 @@ def animate_ball(window,canvas,pos):
             fill="red")
     window.update()
 
-
+def encoder_draw(window,canvas,arduino, L1, L2):
+    theta = get_encoder_feedback(arduino, num_encoders=2)
+    pos = 1000*np.array([L1*np.sin(theta[0]) + L2*np.cos(theta[1]), L1*np.cos(theta[0])-L2*np.sin(theta[1])])
+    print(pos)
+    ball = canvas.create_oval(pos[0]-encoder_ball_radius,
+            pos[1]-encoder_ball_radius,
+            pos[0]+encoder_ball_radius,
+            pos[1]+encoder_ball_radius,
+            fill="black")
+    window.update()
 
 if __name__ == "__main__":
+    arduino = initialize_encoders()
     animation_window = create_animation_window()
     animation_canvas = create_animation_canvas(animation_window)
     traj = initialize_trajectory("lissajous_005.csv")
@@ -64,8 +86,8 @@ if __name__ == "__main__":
         t = time() - t0
         pos = trajectory(t, traj)
         animate_ball(animation_window,animation_canvas,pos)
-        theta = get_encoder_feedback(arduino, num_encoders=2)
-        print(theta)
+        encoder_draw(animation_window,animation_canvas,arduino, L1, L2)
+        # print(theta)
 
         if keyboard.is_pressed('esc'):
             print("Stopping: User input stop command")
