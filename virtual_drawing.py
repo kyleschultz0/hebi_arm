@@ -6,13 +6,14 @@ from PIL import Image, ImageTk
 
 app = Tk()
 app.geometry("1000x1000")
-arduino = initialize_encoders()
+# arduino = initialize_encoders()
 
 # Define font
 bigFont = font.Font(size = 12)
 
 
-#def drawEncoder()
+def drawEncoder():
+    a = 1
 #    theta = get_encoder_feedback(arduino, num_encoders=2)
     
 
