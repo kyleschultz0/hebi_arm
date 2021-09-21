@@ -1,8 +1,9 @@
 import tkinter
-import time
+from time import time, sleep
 import pandas as pd
+import numpy as np
 import encoder_functions
-
+import keyboard
 
  
 # width of the animation window
@@ -38,30 +39,35 @@ def trajectory(t, df):
     x = df.x
     y = df.y
     xd = np.interp(t, tTraj, x)
-    yd = np.interp(t, tTraj, u)
+    yd = np.interp(t, tTraj, y)
     pos = np.array([xd, yd])
     return pos
  
 # Create and animate ball in an infinite loop
-def animate_ball(window,canvas,traj):
-    n = len(traj)
-    ball = canvas.create_oval(traj.x[0]-animation_ball_radius,
-            traj.y[0]-animation_ball_radius,
-            traj.x[0]+animation_ball_radius,
-            traj.y[0]+animation_ball_radius,
+def animate_ball(window,canvas,pos):
+    print(pos)
+    ball = canvas.create_oval(pos[0]-animation_ball_radius,
+            pos[1]-animation_ball_radius,
+            pos[0]+animation_ball_radius,
+            pos[1]+animation_ball_radius,
             fill="red")
-    for i in range(n-1):
-        xinc = traj.x[i+1] - traj.x[i] 
-        yinc = traj.y[i+1] - traj.y[i] 
-        canvas.place(ball,xinc,yinc)
-        window.update()
-        time.sleep(animation_refresh_seconds)
-        ball_pos = canvas.coords(ball)
-        print(ball_pos)
+    window.update()
+
 
 
 if __name__ == "__main__":
     animation_window = create_animation_window()
     animation_canvas = create_animation_canvas(animation_window)
     traj = initialize_trajectory("lissajous_005.csv")
-    animate_ball(animation_window,animation_canvas,traj)
+    t0 = time()
+    while True:
+        t = time() - t0
+        pos = trajectory(t, traj)
+        animate_ball(animation_window,animation_canvas,pos)
+        theta = get_encoder_feedback(arduino, num_encoders=2)
+        print(theta)
+
+        if keyboard.is_pressed('esc'):
+            print("Stopping: User input stop command")
+            break
+
