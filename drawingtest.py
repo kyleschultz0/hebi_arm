@@ -67,7 +67,7 @@ def animate_ball(window,canvas,pos):
 
 def encoder_draw(window,canvas,arduino, L1, L2):
     theta = get_encoder_feedback(arduino, num_encoders=2)
-    pos = 1000*np.array([L1*np.sin(theta[0]) + L2*np.cos(theta[1]), L1*np.cos(theta[0])-L2*np.sin(theta[1])])
+    pos = 1000*np.array([L1*np.sin(theta[0]) + L2*np.cos(theta[1]), L1*np.cos(-theta[0])-L2*np.sin(-theta[1])])
     print(pos)
     ball = canvas.create_oval(pos[0]-encoder_ball_radius,
             pos[1]-encoder_ball_radius,
