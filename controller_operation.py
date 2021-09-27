@@ -39,21 +39,32 @@ def save_data(output):
     np.savetxt("csv/controller1.csv", np.array(output), delimiter=",")
     print("Data saved")
 
+def controller_operation(joystick, group, hebi_feedback, command, L1, L2, T):
+    K = np.matrix([[0.125, 0],
+                   [0, 0.125]])
+    axis = get_axis(joystick)
+    axis_f = input_filter(axis, 10, T)
+    axis_f = np.squeeze(np.asarray(axis_f))
+    theta, omega, torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)
+    theta1 = theta[0]
+    theta2 = theta[1]
+    Jinv = np.matrix([[cos(theta1 + theta2)/(L1*sin(theta2)), sin(theta1 + theta2)/(L1*sin(theta2))],
+                      [-(L2*cos(theta1 + theta2) + L1*cos(theta1))/(L1*L2*sin(theta2)), -(L2*sin(theta1 + theta2) + L1*sin(theta1))/(L1*L2*sin(theta2))]])
+    omega_d = Jinv @ K @ axis_f
+    omega_d = np.squeeze(np.asarray(omega_d))
+    command.velocity = omega_d
+    group.send_command(command)
+
+
+
 if __name__ == "__main__":
     freq = 400 # Hz
     group, hebi_feedback, command = initialize_hebi()
     group.feedback_frequency = freq
-    joystick = initialize_joystick()
-    output = []
-    K = np.matrix([[0.125, 0],
-                   [0, 0.125]])
-
-    Kf = np.matrix([[15, 0],
-                  [0, 15]])
-
     arduino = initialize_encoders()
-
     group_info = group.request_info()
+    joystick = initialize_joystick()
+
 
     if group_info is not None:
         group_info.write_gains("csv/saved_gains.xml")
@@ -75,40 +86,14 @@ if __name__ == "__main__":
 
     t0 = time()
     t1 = t0 
+    sleep(0.001)
 
     while True:
 
-       axis = get_axis(joystick)
-
-       theta_e = get_encoder_feedback(arduino, num_encoders=2)
-       theta, omega, torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)  
-       theta = theta + np.array([0, np.pi/2])   # offsetting transform
-       theta1 = theta[0]
-       theta2 = theta[1]
        T = time() - t1
        t1 = time()
-       axis_f = input_filter(axis, 10, T)
+       controller_operation(joystick, group, hebi_feedback, command, L1, L2, T)
 
-        
-
-       Jinv = np.matrix([[cos(theta1 + theta2)/(L1*sin(theta2)), sin(theta1 + theta2)/(L1*sin(theta2))],
-                         [-(L2*cos(theta1 + theta2) + L1*cos(theta1))/(L1*L2*sin(theta2)), -(L2*sin(theta1 + theta2) + L1*sin(theta1))/(L1*L2*sin(theta2))]])
-
-       Jt = np.matrix([[- L2*sin(theta1 + theta2) - L1*sin(theta1), L2*cos(theta1 + theta2) + L1*cos(theta1)],
-                       [-L2*sin(theta1 + theta2), L2*cos(theta1 + theta2)]])
-        
-       omega_d = Jinv @ K @ axis_f
-       torque_d = Jt @ Kf @ axis_f
-
-       omega_d = np.squeeze(np.asarray(omega_d))
-       torque_d = np.squeeze(np.asarray(torque_d))
-       # print("Omega desired:", omega_d, "\n")
-
-       command.velocity = omega_d
-       # command.effort = torque_d
-       group.send_command(command)
-       t = time() - t0
-       output += [[t, theta[0], theta[1] , omega_d[0], omega_d[1], omega[0], omega[1], axis[0], axis[1], axis_f[0], axis_f[1]]]
 
        if i == 0:
            print("Ready to operate...")
@@ -116,7 +101,88 @@ if __name__ == "__main__":
 
 
        if keyboard.is_pressed('esc'):
-           save_data(output)
            break
+
+
+
+#if __name__ == "__main__":
+#    freq = 400 # Hz
+#    group, hebi_feedback, command = initialize_hebi()
+#    group.feedback_frequency = freq
+#    joystick = initialize_joystick()
+#    output = []
+#    K = np.matrix([[0.25, 0],
+#                   [0, 0.25]])
+
+#    Kf = np.matrix([[15, 0],
+#                  [0, 15]])
+
+#    arduino = initialize_encoders()
+
+#    group_info = group.request_info()
+
+#    if group_info is not None:
+#        group_info.write_gains("csv/saved_gains.xml")
+
+
+
+#    #=== Variables for 2 DOF ===#
+#    L1 = 0.29
+#    L2 = 0.22
+#    #======#
+
+#    #=== Variables for 3 DOF ===#
+#    # L1 = 0.268
+#    # L2 = 0.472
+#    #======#
+
+
+#    i = 0
+
+#    t0 = time()
+#    t1 = t0 
+
+#    while True:
+
+#       axis = get_axis(joystick)
+
+#       theta_e = get_encoder_feedback(arduino, num_encoders=2)
+#       theta, omega, torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)  
+#       theta = theta + np.array([0, np.pi/2])   # offsetting transform
+#       theta1 = theta[0]
+#       theta2 = theta[1]
+#       T = time() - t1
+#       t1 = time()
+#       axis_f = input_filter(axis, 10, T)
+
+        
+
+#       Jinv = np.matrix([[cos(theta1 + theta2)/(L1*sin(theta2)), sin(theta1 + theta2)/(L1*sin(theta2))],
+#                         [-(L2*cos(theta1 + theta2) + L1*cos(theta1))/(L1*L2*sin(theta2)), -(L2*sin(theta1 + theta2) + L1*sin(theta1))/(L1*L2*sin(theta2))]])
+
+#       Jt = np.matrix([[- L2*sin(theta1 + theta2) - L1*sin(theta1), L2*cos(theta1 + theta2) + L1*cos(theta1)],
+#                       [-L2*sin(theta1 + theta2), L2*cos(theta1 + theta2)]])
+        
+#       omega_d = Jinv @ K @ axis_f
+#       torque_d = Jt @ Kf @ axis_f
+
+#       omega_d = np.squeeze(np.asarray(omega_d))
+#       torque_d = np.squeeze(np.asarray(torque_d))
+#       # print("Omega desired:", omega_d, "\n")
+
+#       command.velocity = omega_d
+#       # command.effort = torque_d
+#       group.send_command(command)
+#       t = time() - t0
+#       output += [[t, theta[0], theta[1] , omega_d[0], omega_d[1], omega[0], omega[1], axis[0], axis[1], axis_f[0], axis_f[1]]]
+
+#       if i == 0:
+#           print("Ready to operate...")
+#           i = 1
+
+
+#       if keyboard.is_pressed('esc'):
+#           save_data(output)
+#           break
 
 

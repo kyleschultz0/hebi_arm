@@ -1,4 +1,4 @@
-import tkinter
+vimport tkinter
 import time
 import pandas as pd
 import encoder_functions
