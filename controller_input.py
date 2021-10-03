@@ -12,7 +12,7 @@ def initialize_joystick():
 def get_axis(joystick):
     joystick.init()
     pygame.event.get()
-    axis = np.array([-joystick.get_axis(0), joystick.get_axis(1)])
+    axis = np.array([joystick.get_axis(0), joystick.get_axis(1)])
     return axis
 
 
