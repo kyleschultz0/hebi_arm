@@ -72,8 +72,8 @@ if __name__ == "__main__":
 
 
     #=== variables for 2 dof ===#
-    l1 = 0.29
-    l2 = 0.22
+    L1 = 0.29
+    L2 = 0.22
     #======#
 
     #=== variables for 3 dof ===#
@@ -86,13 +86,16 @@ if __name__ == "__main__":
 
     t0 = time()
     t1 = t0 
+    K = np.matrix([[0.125, 0],
+                   [0, 0.125]])
 
     while True:
 
        axis = get_axis(joystick)
+       axis[1] = -axis[1]
        theta_e = get_encoder_feedback(arduino, num_encoders=2)
        theta, omega, torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)  
-       theta = theta + np.array([0, np.pi/2])   # offsetting transform
+       theta = theta + np.array([-1.58170749, np.pi/2 - 1.48693642])   # offsetting transform
        theta1 = theta[0]
        theta2 = theta[1]
        t = time() - t1
@@ -104,9 +107,11 @@ if __name__ == "__main__":
                          [(L2*cos(theta1 + theta2) + L1*sin(theta1))/(L1*L2*cos(theta2)), (L2*sin(theta1 + theta2) - L1*cos(theta1))/(L1*L2*cos(theta2))]])
 
 
-       omega_d = Jinv @ k @ axis_f
+       omega_d = Jinv @ K @ axis_f
        omega_d = np.squeeze(np.asarray(omega_d))
        command.velocity = omega_d
+       # print(omega_d)
+       group.send_command(command)
 
        t = time() - t0
        output += [[t, theta[0], theta[1] , omega_d[0], omega_d[1], omega[0], omega[1], axis[0], axis[1], axis_f[0], axis_f[1]]]
