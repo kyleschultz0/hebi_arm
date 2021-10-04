@@ -217,7 +217,7 @@ if __name__ == "__main__":
        # print(omega_d)
        group.send_command(command)
 
-       output += [[t, theta[0], theta[1] , omega_d[0], omega_d[1], omega[0], omega[1], axis[0], axis[1], axis_f[0], axis_f[1]]]
+       output += [[t, theta[0], theta[1] , omega_d[0], omega_d[1], omega[0], omega[1], axis[0], axis[1], axis_f[0], axis_f[1]], pos[0], pos[1], pos_draw[0], pos_draw[1]]
 
        if i == 0:
            print("ready to operate...")
