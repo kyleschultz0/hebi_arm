@@ -2,7 +2,8 @@ from hebi_functions import initialize_hebi, get_hebi_feedback, send_hebi_positio
 from trajectory_functions import trajectory
 from encoder_functions import initialize_encoders, get_encoder_feedback
 from controller_input import initialize_joystick, get_axis
-
+import tkinter
+import pandas as pd
 
 import keyboard
 import numpy as np
@@ -16,6 +17,40 @@ y1k_1 = 0 # y1[k-1]
 f1k_1 = 0 # f1[k-1]
 y2k_1 = 0 # y2[k-1]
 f2k_1 = 0 # f2[k-1]
+
+#=== variables for 2 dof ===#
+L1 = 0.29
+L2 = 0.22
+#======#
+
+
+# width of the animation window
+animation_window_width=1000
+# height of the animation window
+animation_window_height=1000
+# radius of the ball
+animation_ball_radius = 10
+# radius of the encoder ball
+encoder_ball_radius = 5
+# delay between successive frames in seconds
+animation_refresh_seconds = 0.01
+
+
+
+# The main window of the animation
+def create_animation_window():
+  window = tkinter.Tk()
+  window.title("Tkinter Animation Demo")
+  # Uses python 3.6+ string interpolation
+  window.geometry(f'{animation_window_width}x{animation_window_height}')
+  return window
+ 
+# Create a canvas for animation and add it to main window
+def create_animation_canvas(window):
+  canvas = tkinter.Canvas(window)
+  canvas.configure(bg="black")
+  canvas.pack(fill="both", expand=True)
+  return canvas
 
 
 def input_filter(input, cutoff_freq, T):
@@ -35,13 +70,27 @@ def input_filter(input, cutoff_freq, T):
     return np.array([y1,y2])
 
 
+def initialize_trajectory(filepath):
+    df = pd.read_csv(filepath, names=["t", "x", "y"])
+    return(df)
+
+def trajectory(t, df):
+    tTraj = 2*df.t
+    x = 0.5*df.x
+    y = 0.5*df.y
+    xd = np.interp(t, tTraj, x)
+    yd = np.interp(t, tTraj, y)
+    pos = np.array([xd, yd])
+    return pos
+
+
 def save_data(output):
-    np.savetxt("csv/controller1.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/controller6.csv", np.array(output), delimiter=",")
     print("Data saved")
 
 def controller_operation(joystick, group, hebi_feedback, command, L1, L2, T):
-    K = np.matrix([[0.25, 0],
-                   [0, 0.25]])
+    K = np.matrix([[0.125, 0],
+                   [0, 0.125]])
     axis = get_axis(joystick)
     axis_f = input_filter(axis, 10, T)
     axis_f = np.squeeze(np.asarray(axis_f))
