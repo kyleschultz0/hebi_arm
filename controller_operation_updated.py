@@ -56,8 +56,57 @@ def controller_operation(joystick, group, hebi_feedback, command, L1, L2, T):
     group.send_command(command)
 
 
+def animate_ball(window,canvas,pos,ball_traj):
+    canvas.coords(ball_traj,
+                pos[0]-animation_ball_radius,
+                pos[1]-animation_ball_radius,
+                pos[0]+animation_ball_radius,
+                pos[1]+animation_ball_radius)
+    window.update()
+
+def encoder_draw(window,canvas,arduino,ball_input,offset,draw):
+    theta = get_encoder_feedback(arduino, num_encoders=2)
+
+    pos = 5000*np.array([-L1*np.sin(theta[0]) - L2*np.cos(theta[0]+theta[1]), L1*np.cos(theta[0])-L2*np.sin(theta[0]+theta[1])])
+    pos[1] = animation_window_height - pos[1]
+    pos += offset
+    if draw == True:
+        canvas.coords(ball_input,
+                      pos[0]-encoder_ball_radius,
+                      pos[1]-encoder_ball_radius,
+                      pos[0]+encoder_ball_radius,
+                      pos[1]+encoder_ball_radius)
+        window.update()
+
+    print(pos)
+    return pos
+
+
 if __name__ == "__main__":
-    freq = 400 # hz
+
+    animation_window = create_animation_window()
+    animation_canvas = create_animation_canvas(animation_window)
+    traj = initialize_trajectory("lissajous_005.csv")
+
+    pos = trajectory(0, traj)
+    offset = np.array([0, 0])
+
+    ball_traj = animation_canvas.create_oval(pos[0]-animation_ball_radius,
+                                             pos[1]-animation_ball_radius,
+                                             pos[0]+animation_ball_radius,
+                                             pos[1]+animation_ball_radius,
+                                             fill="red")
+
+    ball_input = animation_canvas.create_oval(pos[0]-encoder_ball_radius,
+                                              pos[1]-encoder_ball_radius,
+                                              pos[0]+encoder_ball_radius,
+                                              pos[1]+encoder_ball_radius,
+                                              fill="white")
+
+    animation_window.update()
+
+
+    freq = 100 # hz
     group, hebi_feedback, command = initialize_hebi()
     group.feedback_frequency = freq
     joystick = initialize_joystick()
@@ -65,6 +114,11 @@ if __name__ == "__main__":
 
     arduino = initialize_encoders()
     group_info = group.request_info()
+
+    print("Get ready...")
+    sleep(5)
+    pos_draw = encoder_draw(animation_window,animation_canvas,arduino,ball_input,offset,draw=False)
+    offset = pos - pos_draw
 
     if group_info is not None:
         group_info.write_gains("csv/saved_gains.xml")
@@ -85,21 +139,22 @@ if __name__ == "__main__":
     i = 0
 
     t0 = time()
-    t1 = t0 
     K = np.matrix([[0.125, 0],
                    [0, 0.125]])
 
     while True:
 
+       theta, omega, torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)  
+       t = time() - t0
+       pos = trajectory(t, traj)
+       animate_ball(animation_window,animation_canvas,pos,ball_traj)
+       pos_draw = encoder_draw(animation_window,animation_canvas,arduino,ball_input,offset,draw=True)
        axis = get_axis(joystick)
        axis[1] = -axis[1]
        theta_e = get_encoder_feedback(arduino, num_encoders=2)
-       theta, omega, torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)  
        theta = theta + np.array([-1.58170749, np.pi/2 - 1.48693642])   # offsetting transform
        theta1 = theta[0]
        theta2 = theta[1]
-       t = time() - t1
-       t1 = time()
        print(axis)
        axis_f = input_filter(axis, 10, t)
 
@@ -113,7 +168,6 @@ if __name__ == "__main__":
        # print(omega_d)
        group.send_command(command)
 
-       t = time() - t0
        output += [[t, theta[0], theta[1] , omega_d[0], omega_d[1], omega[0], omega[1], axis[0], axis[1], axis_f[0], axis_f[1]]]
 
        if i == 0:
