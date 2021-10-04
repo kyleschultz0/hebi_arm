@@ -85,12 +85,12 @@ def trajectory(t, df):
 
 
 def save_data(output):
-    np.savetxt("csv/controller6.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/controller7.csv", np.array(output), delimiter=",")
     print("Data saved")
 
 def controller_operation(joystick, group, hebi_feedback, command, L1, L2, T):
-    K = np.matrix([[0.05, 0],
-                   [0, 0.05]])
+    K = np.matrix([[0.04, 0],
+                   [0, 0.04]])
     axis = get_axis(joystick)
     axis_f = input_filter(axis, 10, T)
     axis_f = np.squeeze(np.asarray(axis_f))
@@ -113,9 +113,7 @@ def animate_ball(window,canvas,pos,ball_traj):
                 pos[1]+animation_ball_radius)
     window.update()
 
-def encoder_draw(window,canvas,arduino,ball_input,offset,draw):
-    theta = get_encoder_feedback(arduino, num_encoders=2)
-
+def hebi_draw(window,canvas,arduino,ball_input,offset,theta,draw):
     pos = 5000*np.array([-L1*np.sin(theta[0]) - L2*np.cos(theta[0]+theta[1]), L1*np.cos(theta[0])-L2*np.sin(theta[0]+theta[1])])
     pos[1] = animation_window_height - pos[1]
     pos += offset
@@ -129,6 +127,10 @@ def encoder_draw(window,canvas,arduino,ball_input,offset,draw):
 
     # print(pos)
     return pos
+
+def save_data(output):
+    np.savetxt("csv/controller16.csv", np.array(output), delimiter=",")
+    print("Data saved")
 
 
 if __name__ == "__main__":
@@ -166,7 +168,9 @@ if __name__ == "__main__":
 
     print("Get ready...")
     sleep(5)
-    pos_draw = encoder_draw(animation_window,animation_canvas,arduino,ball_input,offset,draw=False)
+    theta, omega, torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback) 
+    theta = theta - np.array([1.58702857, -0.08002613])
+    pos_draw = hebi_draw(animation_window,animation_canvas,arduino,ball_input,offset,theta,draw=False)
     offset = pos - pos_draw
 
     if group_info is not None:
@@ -188,22 +192,22 @@ if __name__ == "__main__":
     i = 0
 
     t0 = time()
-    K = np.matrix([[0.125, 0],
-                   [0, 0.125]])
+    K = np.matrix([[0.05, 0],
+                   [0, 0.05]])
 
     while True:
 
        theta, omega, torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)  
+       theta = theta - np.array([1.58702857, -0.08002613])
        t = time() - t0
        pos = trajectory(t, traj)
        animate_ball(animation_window,animation_canvas,pos,ball_traj)
-       pos_draw = encoder_draw(animation_window,animation_canvas,arduino,ball_input,offset,draw=True)
+       pos_draw = hebi_draw(animation_window,animation_canvas,arduino,ball_input,offset,theta,draw=True)
        axis = get_axis(joystick)
        axis[1] = -axis[1]
-       theta_e = get_encoder_feedback(arduino, num_encoders=2)
-       theta = theta + np.array([-1.58170749, np.pi/2 - 1.48693642])   # offsetting transform
        theta1 = theta[0]
        theta2 = theta[1]
+       print(theta)
        # print(axis)
        axis_f = input_filter(axis, 10, t)
 
@@ -218,7 +222,7 @@ if __name__ == "__main__":
        group.send_command(command)
 
        # output += [[t, omega_d[0], omega_d[1], omega[0], omega[1], axis[0], pos[0], pos[1], pos_draw[0], pos_draw[1]]]
-       output += [[t, theta[0], theta[1], theta_e[0], theta_e[1], omega_d[0], omega_d[1], omega[0], omega[1], axis[0], pos[0], pos[1], pos_draw[0], pos_draw[1]]]
+       output += [[t, theta[0], theta[1], omega_d[0], omega_d[1], omega[0], omega[1], axis[0], pos[0], pos[1], pos_draw[0], pos_draw[1]]]
 
        if i == 0:
            print("ready to operate...")
@@ -228,5 +232,6 @@ if __name__ == "__main__":
        if keyboard.is_pressed('esc'):
            save_data(output)
            break
+
 
 
