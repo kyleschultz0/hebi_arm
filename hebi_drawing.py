@@ -84,13 +84,9 @@ def trajectory(t, df):
     return pos
 
 
-def save_data(output):
-    np.savetxt("csv/controller7.csv", np.array(output), delimiter=",")
-    print("Data saved")
-
 def controller_operation(joystick, group, hebi_feedback, command, L1, L2, T):
-    K = np.matrix([[0.04, 0],
-                   [0, 0.04]])
+    K = np.matrix([[0.02, 0],
+                   [0, 0.02]])
     axis = get_axis(joystick)
     axis_f = input_filter(axis, 10, T)
     axis_f = np.squeeze(np.asarray(axis_f))
@@ -192,8 +188,8 @@ if __name__ == "__main__":
     i = 0
 
     t0 = time()
-    K = np.matrix([[0.05, 0],
-                   [0, 0.05]])
+    K = np.matrix([[0.04, 0],
+                   [0, 0.04]])
 
     while True:
 
