@@ -85,7 +85,7 @@ def trajectory(t, df):
 
 
 def save_data(output):
-    np.savetxt("csv/controller6.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/testvideo.csv", np.array(output), delimiter=",")
     print("Data saved")
 
 def controller_operation(joystick, group, hebi_feedback, command, L1, L2, T):

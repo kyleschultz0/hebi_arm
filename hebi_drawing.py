@@ -75,7 +75,7 @@ def initialize_trajectory(filepath):
     return(df)
 
 def trajectory(t, df):
-    tTraj = 0.5*df.t
+    tTraj = 4*df.t
     x = 0.5*df.x
     y = 0.5*df.y
     xd = np.interp(t, tTraj, x)
@@ -125,7 +125,7 @@ def hebi_draw(window,canvas,arduino,ball_input,offset,theta,draw):
     return pos
 
 def save_data(output):
-    np.savetxt("csv/controller19.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/R2Drawing12.csv", np.array(output), delimiter=",")
     print("Data saved")
 
 
@@ -188,8 +188,8 @@ if __name__ == "__main__":
     i = 0
 
     t0 = time()
-    K = np.matrix([[0.06, 0],
-                   [0, 0.06]])
+    K = np.matrix([[0.05, 0],
+                   [0, 0.05]])
 
     while True:
 

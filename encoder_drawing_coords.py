@@ -31,7 +31,7 @@ L2 = 0.22
 
 
 def save_data(output):
-    np.savetxt("csv/DrawingTest2.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/R2Drawing12.csv", np.array(output), delimiter=",")
     print("Data saved")
 
 

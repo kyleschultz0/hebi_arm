@@ -21,7 +21,7 @@ animation_refresh_seconds = 0.01
 
 
 def save_data(output):
-    np.savetxt("csv/DrawingTest1.csv", np.array(output), delimiter=",")
+    np.savetxt("csv/R2Drawing6.csv", np.array(output), delimiter=",")
     print("Data saved")
 
 
@@ -45,9 +45,9 @@ def initialize_trajectory(filepath):
     return(df)
 
 def trajectory(t, df):
-    tTraj = df.t
-    x = df.x
-    y = df.y
+    tTraj = 0.25*df.t
+    x = 0.5*df.x
+    y = 0.5*df.y
     xd = np.interp(t, tTraj, x)
     yd = np.interp(t, tTraj, y)
     pos = np.array([xd, yd])
@@ -65,7 +65,7 @@ def animate_ball(window,canvas,pos,ball_traj):
 def controller_draw(window,canvas,joystick,pos_last,t_draw,ball_input):
     input = get_axis(joystick)
     delta_t = time() - t_draw
-    delta_pos = input*delta_t*300
+    delta_pos = input*delta_t*500
     pos = pos_last + delta_pos
     t_draw = time()
     canvas.coords(ball_input,
