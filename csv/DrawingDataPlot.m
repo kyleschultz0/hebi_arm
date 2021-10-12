@@ -14,6 +14,35 @@ title("Output With Cables")
 
 %% Import functions
 
+function data = importfileController(filename, dataLines)
+
+%% Input handling
+
+% If dataLines is not specified, define defaults
+if nargin < 2
+    dataLines = [1, Inf];
+end
+
+%% Set up the Import Options and import the data
+opts = delimitedTextImportOptions("NumVariables", 5);
+
+% Specify range and delimiter
+opts.DataLines = dataLines;
+opts.Delimiter = ",";
+
+% Specify column names and types
+opts.VariableNames = ["t", "pos1", "pos2", "posDraw1", "posDraw2"];
+opts.VariableTypes = ["double", "double", "double", "double", "double"];
+
+% Specify file level properties
+opts.ExtraColumnsRule = "ignore";
+opts.EmptyLineRule = "read";
+
+% Import the data
+data = readtable(filename, opts);
+
+end
+
 function data = importfileEncoder(filename, dataLines)
 %% Input handling
 
