@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 import keyboard
 from controller_input import initialize_joystick, get_axis
+import os.path
+from os import path
 
 
 
@@ -20,9 +22,29 @@ encoder_ball_radius = 5
 animation_refresh_seconds = 0.01
 
 
+#=== Lissajous variables ===#
+f = 0.15
+a = 2*np.pi*f
+a_per_b = 0.5
+b = a/a_per_b
+window_size = 400
+d = np.pi/4;
+T = 1/f;
+
+gain = 650  # gain factor for velocity 
+type = "controller"
+
 def save_data(output):
-    np.savetxt("csv/R2Drawing6.csv", np.array(output), delimiter=",")
-    print("Data saved")
+    fs = str(f)
+    gains = str(gain)
+    f_r = fs.replace('.', '')
+    gain_r = gains.replace('.', '')
+    save_name = "csv/{}_{}_{}_1".format(type, f_r, gain_r)
+    if path.exists(save_name) is True:
+        save_name = "csv/{}_{}_{}_2".format(type, f_r, gain_r)
+
+    np.savetxt(save_name, np.array(output), delimiter=",")
+    print("Data saved as:", save_name)
 
 
 # The main window of the animation
@@ -40,16 +62,10 @@ def create_animation_canvas(window):
   canvas.pack(fill="both", expand=True)
   return canvas
 
-def initialize_trajectory(filepath):
-    df = pd.read_csv(filepath, names=["t", "x", "y"])
-    return(df)
 
-def trajectory(t, df):
-    tTraj = 0.25*df.t
-    x = 0.5*df.x
-    y = 0.5*df.y
-    xd = np.interp(t, tTraj, x)
-    yd = np.interp(t, tTraj, y)
+def trajectory(t):
+    xd = window_size + 50 + np.round(window_size*np.sin(a*t+d));
+    yd = window_size + 50 + np.round(window_size*np.cos(b*t));
     pos = np.array([xd, yd])
     return pos
  
@@ -65,7 +81,7 @@ def animate_ball(window,canvas,pos,ball_traj):
 def controller_draw(window,canvas,joystick,pos_last,t_draw,ball_input):
     input = get_axis(joystick)
     delta_t = time() - t_draw
-    delta_pos = input*delta_t*500
+    delta_pos = input*delta_t*gain
     pos = pos_last + delta_pos
     t_draw = time()
     canvas.coords(ball_input,
@@ -81,8 +97,7 @@ if __name__ == "__main__":
     joystick = initialize_joystick()
     animation_window = create_animation_window()
     animation_canvas = create_animation_canvas(animation_window)
-    traj = initialize_trajectory("lissajous_005.csv")
-    pos = trajectory(0, traj)
+    pos = trajectory(0)
     pos_draw = pos
 
     ball_traj = animation_canvas.create_oval(pos[0]-animation_ball_radius,
@@ -101,13 +116,18 @@ if __name__ == "__main__":
     t_draw = t0
     while True:
         t = time() - t0
-        pos = trajectory(t, traj)
+        pos = trajectory(t)
         animate_ball(animation_window,animation_canvas,pos,ball_traj)
         pos_draw, t_draw = controller_draw(animation_window,animation_canvas,joystick,pos_draw,t_draw,ball_input)
         output += [[t,pos[0],pos[1],pos_draw[0],pos_draw[1]]]
 
         if keyboard.is_pressed('esc'):
-            print("Stopping: User input stop command")
+            print("Stopping: trajectory interupted")
+            break
+
+        
+        if t > (T + 0.05):
+            print("Stopping: trajectory completed")
             save_data(output)
             break
 

@@ -23,6 +23,15 @@ L1 = 0.29
 L2 = 0.22
 #======#
 
+#=== Lissajous variables ===#
+
+f = 0.05
+a = 2*np.pi*f
+a_per_b = 0.5
+b = a/a_per_b
+window_size = 400
+d = pi/4;
+
 
 # width of the animation window
 animation_window_width=1000
@@ -74,12 +83,9 @@ def initialize_trajectory(filepath):
     df = pd.read_csv(filepath, names=["t", "x", "y"])
     return(df)
 
-def trajectory(t, df):
-    tTraj = 4*df.t
-    x = 0.5*df.x
-    y = 0.5*df.y
-    xd = np.interp(t, tTraj, x)
-    yd = np.interp(t, tTraj, y)
+def trajectory(t):
+    xd = window_size + 50 + np.round(window_size*np.sin(a*t+d));
+    yd = window_size + 50 + np.round(window_size*np.cos(b*t));
     pos = np.array([xd, yd])
     return pos
 
@@ -133,7 +139,6 @@ if __name__ == "__main__":
 
     animation_window = create_animation_window()
     animation_canvas = create_animation_canvas(animation_window)
-    traj = initialize_trajectory("lissajous_005.csv")
 
     pos = trajectory(0, traj)
     offset = np.array([0, 0])
@@ -196,7 +201,7 @@ if __name__ == "__main__":
        theta, omega, torque, hebi_limit_stop_flag = get_hebi_feedback(group, hebi_feedback)  
        theta = theta - np.array([1.58702857, -0.08002613])
        t = time() - t0
-       pos = trajectory(t, traj)
+       pos = trajectory(t)
        animate_ball(animation_window,animation_canvas,pos,ball_traj)
        pos_draw = hebi_draw(animation_window,animation_canvas,arduino,ball_input,offset,theta,draw=True)
        axis = get_axis(joystick)

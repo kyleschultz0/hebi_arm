@@ -75,11 +75,7 @@ def initialize_trajectory(filepath):
     return(df)
 
 def trajectory(t, df):
-    tTraj = 1*df.t
-    x = 0.5*df.x
-    y = 0.5*df.y
-    xd = np.interp(t, tTraj, x)
-    yd = np.interp(t, tTraj, y)
+    xd = 400*np.cos()
     pos = np.array([xd, yd])
     return pos
 
